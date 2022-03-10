@@ -17,7 +17,7 @@
 		87AA8AF727D748D500565E65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AF527D748D500565E65 /* Main.storyboard */; };
 		87AA8AF927D748D600565E65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AF827D748D600565E65 /* Assets.xcassets */; };
 		87AA8AFC27D748D600565E65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AFA27D748D600565E65 /* LaunchScreen.storyboard */; };
-		87AA8B0A27D749A400565E65 /* DatabaseApiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8B0927D749A400565E65 /* DatabaseApiTests.swift */; };
+		87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */; };
 		D21E46D942A045FCBA144F61 /* Pods_DatabaseApi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D983EA8393374BA53E3748C5 /* Pods_DatabaseApi.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +47,7 @@
 		87AA8AFB27D748D600565E65 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		87AA8AFD27D748D600565E65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		87AA8B0727D749A400565E65 /* DatabaseApiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatabaseApiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		87AA8B0927D749A400565E65 /* DatabaseApiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseApiTests.swift; sourceTree = "<group>"; };
+		87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStoreClient.swift; sourceTree = "<group>"; };
 		CCBEF388877405875E0894D3 /* Pods-DatabaseApi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DatabaseApi.debug.xcconfig"; path = "Target Support Files/Pods-DatabaseApi/Pods-DatabaseApi.debug.xcconfig"; sourceTree = "<group>"; };
 		D983EA8393374BA53E3748C5 /* Pods_DatabaseApi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DatabaseApi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF82A3DA59EB6739EDAA7C75 /* Pods-DatabaseApi-DatabaseApiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DatabaseApi-DatabaseApiTests.debug.xcconfig"; path = "Target Support Files/Pods-DatabaseApi-DatabaseApiTests/Pods-DatabaseApi-DatabaseApiTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -126,6 +126,7 @@
 				8753A5B727D7674400FB72A4 /* DatabaseApi.xcdatamodeld */,
 				8753A5B527D75B1700FB72A4 /* Logging.swift */,
 				8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */,
+				87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */,
 			);
 			path = DatabaseApi;
 			sourceTree = "<group>";
@@ -133,7 +134,6 @@
 		87AA8B0827D749A400565E65 /* DatabaseApiTests */ = {
 			isa = PBXGroup;
 			children = (
-				87AA8B0927D749A400565E65 /* DatabaseApiTests.swift */,
 			);
 			path = DatabaseApiTests;
 			sourceTree = "<group>";
@@ -328,6 +328,7 @@
 				8753A5B927D7674400FB72A4 /* DatabaseApi.xcdatamodeld in Sources */,
 				8753A5B627D75B1700FB72A4 /* Logging.swift in Sources */,
 				87AA8AF427D748D500565E65 /* ViewController.swift in Sources */,
+				87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */,
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
 				87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */,
 			);
@@ -337,7 +338,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87AA8B0A27D749A400565E65 /* DatabaseApiTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
