@@ -19,6 +19,7 @@
 		87AA8AFC27D748D600565E65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AFA27D748D600565E65 /* LaunchScreen.storyboard */; };
 		87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */; };
 		87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */; };
+		87CF90C327DA0EA50003A3E9 /* EntityAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90C227DA0EA50003A3E9 /* EntityAttribute.swift */; };
 		D21E46D942A045FCBA144F61 /* Pods_DatabaseApi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D983EA8393374BA53E3748C5 /* Pods_DatabaseApi.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		87AA8B0727D749A400565E65 /* DatabaseApiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatabaseApiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStoreClient.swift; sourceTree = "<group>"; };
 		87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRepresentable.swift; sourceTree = "<group>"; };
+		87CF90C227DA0EA50003A3E9 /* EntityAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAttribute.swift; sourceTree = "<group>"; };
 		CCBEF388877405875E0894D3 /* Pods-DatabaseApi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DatabaseApi.debug.xcconfig"; path = "Target Support Files/Pods-DatabaseApi/Pods-DatabaseApi.debug.xcconfig"; sourceTree = "<group>"; };
 		D983EA8393374BA53E3748C5 /* Pods_DatabaseApi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DatabaseApi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF82A3DA59EB6739EDAA7C75 /* Pods-DatabaseApi-DatabaseApiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DatabaseApi-DatabaseApiTests.debug.xcconfig"; path = "Target Support Files/Pods-DatabaseApi-DatabaseApiTests/Pods-DatabaseApi-DatabaseApiTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */,
+				87CF90C227DA0EA50003A3E9 /* EntityAttribute.swift */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 				8753A5B627D75B1700FB72A4 /* Logging.swift in Sources */,
 				87AA8AF427D748D500565E65 /* ViewController.swift in Sources */,
 				87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */,
+				87CF90C327DA0EA50003A3E9 /* EntityAttribute.swift in Sources */,
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
 				87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */,
 				87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */,
