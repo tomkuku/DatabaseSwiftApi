@@ -11,4 +11,5 @@ final class Employee: EntityRepresenter {
     
     @Attribute var name: String
     @OptionalAttribute var age: Int?
+    @ToOneRelationship var job: Company?
 }

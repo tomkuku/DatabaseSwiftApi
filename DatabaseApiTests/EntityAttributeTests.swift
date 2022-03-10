@@ -33,23 +33,54 @@ final class EntityAttributeTests: XCTestCase {
         
         assertThat(employee.name, equalTo("-"))
         assertThat(employee.age, nilValue())
+        assertThat(employee.job, nilValue())
     }
     
     func test__set_optional_value() {
         let employee: Employee = sut.createObject()
         employee.name = "Tom"
         employee.age = nil
+        employee.job = nil
         
         assertThat(employee.name, equalTo("Tom"))
         assertThat(employee.age, nilValue())
+        assertThat(employee.job, nilValue())
     }
     
     func test__set_not_optional_value() {
+        let company: Company = sut.createObject()
+        company.name = "MyCompany"
+        
         let employee: Employee = sut.createObject()
         employee.name = "Tom"
         employee.age = 23
+        employee.job = company
         
         assertThat(employee.name, equalTo("Tom"))
         assertThat(employee.age, equalTo(23))
+        assertThat(employee.job?.name, equalTo(company.name))
+        assertThat(employee.job?.employees.count, equalTo(1))
+        assertThat(company.employees.first?.name, equalTo("Tom"))
+    }
+    
+    func test__to_many_relationship() {
+        let employee1: Employee = sut.createObject()
+        employee1.name = "Tom"
+        
+        let employee2: Employee = sut.createObject()
+        employee2.name = "John"
+        
+        let company: Company = sut.createObject()
+        company.name = "MyCompany"
+        company.employees = [employee1]
+        company.employees.insert(employee2)
+        company.employees.insert(employee1)
+        company.employees.insert(employee2)
+        
+        assertThat(company.employees.count, equalTo(2))
+        
+        company.employees.forEach {
+            assertThat($0.job?.name, equalTo("MyCompany"))
+        }
     }
 }

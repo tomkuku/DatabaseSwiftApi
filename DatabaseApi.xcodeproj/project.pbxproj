@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		76CAC0549F7AA8242C719BAC /* Pods_DatabaseApi_DatabaseApiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C1F7DFDA013512D87AE9F97 /* Pods_DatabaseApi_DatabaseApiTests.framework */; };
+		873E36F627DA47D700BA38C8 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873E36F527DA47D700BA38C8 /* Company.swift */; };
 		8753A5A727D74FA800FB72A4 /* PersistentStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */; };
 		8753A5B627D75B1700FB72A4 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B527D75B1700FB72A4 /* Logging.swift */; };
 		8753A5B927D7674400FB72A4 /* DatabaseApi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B727D7674400FB72A4 /* DatabaseApi.xcdatamodeld */; };
@@ -39,6 +40,7 @@
 		03D7B9853917BD4377E86F74 /* Pods-DatabaseApi-DatabaseApiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DatabaseApi-DatabaseApiTests.release.xcconfig"; path = "Target Support Files/Pods-DatabaseApi-DatabaseApiTests/Pods-DatabaseApi-DatabaseApiTests.release.xcconfig"; sourceTree = "<group>"; };
 		06626185E872CE00CE3C2D42 /* Pods-DatabaseApi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DatabaseApi.release.xcconfig"; path = "Target Support Files/Pods-DatabaseApi/Pods-DatabaseApi.release.xcconfig"; sourceTree = "<group>"; };
 		4C1F7DFDA013512D87AE9F97 /* Pods_DatabaseApi_DatabaseApiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DatabaseApi_DatabaseApiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		873E36F527DA47D700BA38C8 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreManager.swift; sourceTree = "<group>"; };
 		8753A5B527D75B1700FB72A4 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		8753A5B827D7674400FB72A4 /* DatabaseApi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DatabaseApi.xcdatamodel; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				87CF90B827D9F0050003A3E9 /* Employee.swift */,
+				873E36F527DA47D700BA38C8 /* Company.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				87AA8AF427D748D500565E65 /* ViewController.swift in Sources */,
 				87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */,
 				87CF90C327DA0EA50003A3E9 /* EntityAttribute.swift in Sources */,
+				873E36F627DA47D700BA38C8 /* Company.swift in Sources */,
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
 				87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */,
 				87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */,
