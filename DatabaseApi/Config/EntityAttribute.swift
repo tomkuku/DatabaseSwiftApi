@@ -26,6 +26,14 @@ class EntityAttribute {
 
 @propertyWrapper
 final class Attribute<T>: EntityAttribute {
+    var wrappedValue: T {
+        get { databaseModelObject.getValue(forKey: key)! }
+        set { databaseModelObject.set(newValue, forKey: key) }
+    }
+}
+
+@propertyWrapper
+final class OptionalAttribute<T>: EntityAttribute {
     var wrappedValue: T? {
         get { databaseModelObject.getValue(forKey: key) }
         set { databaseModelObject.set(newValue, forKey: key) }
@@ -34,18 +42,14 @@ final class Attribute<T>: EntityAttribute {
 
 extension NSManagedObject {
     func getValue<T>(forKey key: String) -> T? {
-        var returnValue: T?
         willAccessValue(forKey: key)
         defer { didAccessValue(forKey: key) }
-        
-        returnValue = primitiveValue(forKey: key) as? T
-        return returnValue
+        return primitiveValue(forKey: key) as? T
     }
     
     func set(_ value: Any?, forKey key: String) {
         willChangeValue(forKey: key)
         defer { didChangeValue(forKey: key) }
-        
         guard let value = value else {
             setPrimitiveValue(nil, forKey: key)
             return
