@@ -10,7 +10,7 @@ import CoreData
 
 class EntityAttribute {
     var databaseModelObject: NSManagedObject!
-    private(set) var key: String = ""
+    fileprivate var key: String = ""
     
     init(_ key: String = "") {
         self.key = key
@@ -31,6 +31,8 @@ final class Attribute<T>: EntityAttribute {
         set { databaseModelObject.set(newValue, forKey: key) }
     }
 }
+
+// MARK: - OptionalAttribute
 
 @propertyWrapper
 final class OptionalAttribute<T>: EntityAttribute {

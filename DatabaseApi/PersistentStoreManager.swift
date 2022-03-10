@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 protocol PersistentStoreManager {
+    func getContext() -> NSManagedObjectContext
 }
 
 final class PersistentStoreManagerImpl: PersistentStoreManager {
@@ -42,7 +43,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
             let modelURL = Bundle.main.url(forResource: storeName, withExtension: "momd"),
             let mom = NSManagedObjectModel(contentsOf: modelURL)
         else {
-            Log.error("ManagedObjectModel not found")
+            Log.fatal("ManagedObjectModel not found")
         }
         
         let storeFileName = "\(storeName).sqlite"
@@ -53,7 +54,6 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
         
         do {
             try poc.addPersistentStore(ofType: storeType, configurationName: nil, at: persistentStoreUrl, options: nil)
-            Log.debug("Added PersistentStore with url: \(persistentStoreUrl)")
         } catch {
             Log.error("Adding PersistentStore faild with error: \(error.localizedDescription)")
         }
@@ -70,8 +70,14 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
                 try masterContext.save()
             }
         } catch {
-            Log.warning("Master context saving faild with error: \(error.localizedDescription)")
+            Log.error("Master context saving faild with error: \(error.localizedDescription)")
             assertionFailure()
         }
+    }
+    
+    func getContext() -> NSManagedObjectContext {
+        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        moc.parent = masterContext
+        return moc
     }
 }
