@@ -50,6 +50,7 @@ final class EntityAttributeTests: XCTestCase {
     func test__set_not_optional_value() {
         let company: Company = sut.createObject()
         company.name = "MyCompany"
+        company.streetName = "custom street"
         
         let employee: Employee = sut.createObject()
         employee.name = "Tom"
@@ -59,6 +60,7 @@ final class EntityAttributeTests: XCTestCase {
         assertThat(employee.name, equalTo("Tom"))
         assertThat(employee.age, equalTo(23))
         assertThat(employee.job?.name, equalTo(company.name))
+        assertThat(company.streetName, equalTo("custom street"))
         assertThat(employee.job?.employees.count, equalTo(1))
         assertThat(company.employees.first?.name, equalTo("Tom"))
     }
@@ -72,6 +74,8 @@ final class EntityAttributeTests: XCTestCase {
         
         let company: Company = sut.createObject()
         company.name = "MyCompany"
+        company.streetName = "custom street"
+        
         company.employees = [employee1]
         company.employees.insert(employee2)
         company.employees.insert(employee1)
@@ -82,5 +86,14 @@ final class EntityAttributeTests: XCTestCase {
         company.employees.forEach {
             assertThat($0.job?.name, equalTo("MyCompany"))
         }
+        
+        company.employees.remove(employee1)
+        
+        assertThat(company.employees.count, equalTo(1))
+        
+        company.employees.removeAll()
+        
+        assertThat(company.employees, empty())
+
     }
 }
