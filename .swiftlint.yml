@@ -21,8 +21,8 @@ identifier_name:
   min_length:
     error: 2
   max_length:
-    warning: 25
-    error: 30
+    warning: 30
+    error: 35
 
 disabled_rules:
   - trailing_whitespace

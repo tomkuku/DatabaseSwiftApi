@@ -19,7 +19,7 @@ final class EntityAttributeTests: XCTestCase {
         super.setUp()
         
         let persistentStoreManager = PersistentStoreManagerImpl(mode: .test)
-        self.sut = PersistentStoreClientImpl(context: persistentStoreManager.getContext())
+        self.sut = PersistentStoreClientImpl(context: persistentStoreManager.getNewContext())
     }
     
     override func tearDown() {
@@ -56,6 +56,7 @@ final class EntityAttributeTests: XCTestCase {
         employee.name = "Tom"
         employee.age = 23
         employee.job = company
+        company.employees.insert(employee)
         
         assertThat(employee.name, equalTo("Tom"))
         assertThat(employee.age, equalTo(23))

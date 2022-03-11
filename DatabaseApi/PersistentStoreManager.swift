@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 protocol PersistentStoreManager {
-    func getContext() -> NSManagedObjectContext
+    func getNewContext() -> NSManagedObjectContext
 }
 
 final class PersistentStoreManagerImpl: PersistentStoreManager {
@@ -75,7 +75,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
         }
     }
     
-    func getContext() -> NSManagedObjectContext {
+    func getNewContext() -> NSManagedObjectContext {
         let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.parent = masterContext
         return moc

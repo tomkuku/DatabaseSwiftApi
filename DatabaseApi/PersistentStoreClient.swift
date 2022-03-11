@@ -9,41 +9,58 @@ import Foundation
 import CoreData
 
 protocol PersistentStoreClient {
-    func createObject<E: EntityRepresentable>() -> E
+    func createObject<T: EntityRepresentable>() -> T
     func saveChanges()
-    func fetch<E: EntityRepresentable>() -> [E]
+    func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T]
+}
+
+extension PersistentStoreClient {
+    func fetch<T: Fetchable>(filter: T.Filter? = nil, sorting: [T.Sorting] = [], fetchLimit: Int? = nil) -> [T] {
+        fetch(filter: filter, sorting: sorting, fetchLimit: fetchLimit)
+    }
+    
+    func fetchFirstObject<T: Fetchable>(filter: T.Filter? = nil, sorting: [T.Sorting] = []) -> T? {
+        fetch(filter: filter, sorting: sorting, fetchLimit: 1).first
+    }
 }
 
 final class PersistentStoreClientImpl: PersistentStoreClient {
-        
+    
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context
     }
     
-    func createObject<E: EntityRepresentable>() -> E {
-        let entityName = String(describing: E.self)
+    func saveChanges() {
+        guard context.hasChanges else {
+            Log.debug("Context doesn't have changes.")
+            return
+        }
+        
+        do {
+            try context.save()
+        } catch {
+            Log.error("Saving context faild with error: \(error.localizedDescription)")
+        }
+    }
+    
+    func createObject<T: EntityRepresentable>() -> T {
+        let entityName = String(describing: T.self)
         guard let entity = NSEntityDescription.entity(forEntityName: entityName, in: context) else {
             Log.fatal("Entity with name \(entityName) not found!")
         }
         let managedObject = NSManagedObject(entity: entity, insertInto: context)
-        return E.init(managedObject: managedObject)
+        return T.init(managedObject: managedObject)
     }
     
-    func saveChanges() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                Log.error("Saving context failure with error: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    func fetch<E: EntityRepresentable>() -> [E] {
-        let entityName = String(describing: E.self)
+    func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T] {
+        let entityName = String(describing: T.self)
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: entityName)
+        fetchRequest.predicate = filter?.predicate
+        fetchRequest.sortDescriptors = sorting.map { $0.sortDescriptor }
+        fetchRequest.fetchLimit = fetchLimit ?? fetchRequest.fetchLimit
+        
         var objects: [NSManagedObject] = []
         
         do {
@@ -53,7 +70,7 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         }
         
         return objects.map {
-            E.init(managedObject: $0)
+            T.init(managedObject: $0)
         }
     }
 }
