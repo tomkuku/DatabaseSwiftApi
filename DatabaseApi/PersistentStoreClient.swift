@@ -11,6 +11,7 @@ import CoreData
 protocol PersistentStoreClient {
     func createObject<T: EntityRepresentable>() -> T
     func saveChanges()
+    func revertChanges()
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T]
 }
 
@@ -43,6 +44,10 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         } catch {
             Log.error("Saving context faild with error: \(error.localizedDescription)")
         }
+    }
+    
+    func revertChanges() {
+        context.rollback()
     }
     
     func createObject<T: EntityRepresentable>() -> T {

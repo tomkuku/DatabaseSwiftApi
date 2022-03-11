@@ -84,4 +84,26 @@ class PersistentStoreClientTests: XCTestCase {
         
         assertThat(fetchedEmployee?.age, equalTo(employee2.age))
     }
+    
+    func test__revert_changes() {
+        let employee1: Employee = sut.createObject()
+        employee1.age = 22
+        
+        let employee2: Employee = sut.createObject()
+        employee2.age = 41
+        
+        sut.saveChanges()
+        
+        employee2.age = 42
+        
+        let employee3: Employee = sut.createObject()
+        employee3.age = 33
+        
+        sut.revertChanges()
+        
+        let fetchedEmployees: [Employee] = sut.fetch()
+        
+        assertThat(fetchedEmployees.count, equalTo(2))
+        assertThat(employee3.age, nilValue())
+    }
 }
