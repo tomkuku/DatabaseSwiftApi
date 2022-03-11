@@ -85,25 +85,62 @@ class PersistentStoreClientTests: XCTestCase {
         assertThat(fetchedEmployee?.age, equalTo(employee2.age))
     }
     
-    func test__revert_changes() {
+    func test__revert_changes_not_saved_client() {
         let employee1: Employee = sut.createObject()
         employee1.age = 22
         
         let employee2: Employee = sut.createObject()
         employee2.age = 41
         
+        sut.revertChanges()
+        
+        assertThat(employee1.age, nilValue())
+        assertThat(employee2.age, nilValue())
+    }
+    
+    func test__revert_changes_saved_client() {
+        let employee: Employee = sut.createObject()
+        employee.age = 22
+        
         sut.saveChanges()
-        
-        employee2.age = 42
-        
-        let employee3: Employee = sut.createObject()
-        employee3.age = 33
-        
         sut.revertChanges()
         
         let fetchedEmployees: [Employee] = sut.fetch()
         
-        assertThat(fetchedEmployees.count, equalTo(2))
-        assertThat(employee3.age, nilValue())
+        assertThat(fetchedEmployees.count, equalTo(1))
+        assertThat(employee.age, equalTo(22))
+    }
+    
+    func test__delete_not_saved_object() {
+        let employee: Employee = sut.createObject()
+        employee.age = 22
+        
+        sut.deleteObject(employee)
+        
+        let fetchedEmployees: [Employee] = sut.fetch()
+        
+        assertThat(fetchedEmployees, empty())
+        assertThat(employee.age, nilValue())
+    }
+    
+    func test__delete_saved_object() {
+        let employee: Employee = sut.createObject()
+        employee.age = 22
+        
+        sut.saveChanges()
+        sut.deleteObject(employee)
+        
+        let secondPersistentStoreClient = PersistentStoreClientImpl(context: mock.getNewContext())
+        
+        var fetchedEmployees: [Employee] = secondPersistentStoreClient.fetch()
+        
+        assertThat(fetchedEmployees.count, equalTo(1))
+        assertThat(employee.age, equalTo(22))
+        
+        sut.saveChanges()
+        fetchedEmployees = secondPersistentStoreClient.fetch()
+        
+        assertThat(fetchedEmployees, empty())
+        assertThat(employee.age, nilValue())
     }
 }

@@ -12,6 +12,12 @@ protocol PersistentStoreClient {
     func createObject<T: EntityRepresentable>() -> T
     func saveChanges()
     func revertChanges()
+    /**
+     Deletes single object.
+     If object has already been saved into database, object will be deleted when the saveChanges method is called.
+     If object has been created in client only, object will be deleted immediately.
+     */
+    func deleteObject<T: EntityRepresentable>(_ object: T)
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T]
 }
 
@@ -77,5 +83,9 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         return objects.map {
             T.init(managedObject: $0)
         }
+    }
+    
+    func deleteObject<T: EntityRepresentable>(_ object: T) {
+        context.delete(object.managedObject)
     }
 }

@@ -40,7 +40,7 @@ class EntityRepresenter: EntityRepresentable {
             else { continue }
             
             attribute.databaseModelObject = self.managedObject
-            attribute.set(key: String(childName.dropFirst()))
+            attribute.set(name: String(childName.dropFirst()))
         }
     }
 }
