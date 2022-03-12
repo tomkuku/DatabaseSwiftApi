@@ -18,7 +18,7 @@ class PersistentStoreClientTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mock = PersistentStoreManagerImpl(mode: .test)
-        sut = PersistentStoreClientImpl(context: mock.getNewContext())
+        sut = mock.createNewClient()
     }
     
     override func tearDown() {
@@ -35,31 +35,21 @@ class PersistentStoreClientTests: XCTestCase {
     }
     
     func test__fetch_saved_objects() {
-        let secondPersistentStoreClient = PersistentStoreClientImpl(context: mock.getNewContext())
-        
-        let employee1: Employee = secondPersistentStoreClient.createObject()
+        let employee1: Employee = sut.createObject()
         employee1.age = 22
         
-        let employee2: Employee = secondPersistentStoreClient.createObject()
+        let employee2: Employee = sut.createObject()
         employee2.age = 23
         
-        let employee3: Employee = secondPersistentStoreClient.createObject()
+        let employee3: Employee = sut.createObject()
         employee3.age = 35
         
-        let employee4: Employee = secondPersistentStoreClient.createObject()
+        let employee4: Employee = sut.createObject()
         employee4.age = 41
+                        
+        sut.saveChanges()
         
-        var fetchedEmployees: [Employee] = sut.fetch()
-        
-        assertThat(fetchedEmployees, empty())
-        
-        secondPersistentStoreClient.saveChanges()
-        
-        fetchedEmployees = sut.fetch()
-        
-        assertThat(fetchedEmployees.count, equalTo(4))
-        
-        fetchedEmployees = sut.fetch(filter: .ageGreatThen(45))
+        var fetchedEmployees: [Employee] = sut.fetch(filter: .ageGreatThen(45))
         
         assertThat(fetchedEmployees, empty())
         
@@ -130,15 +120,13 @@ class PersistentStoreClientTests: XCTestCase {
         sut.saveChanges()
         sut.deleteObject(employee)
         
-        let secondPersistentStoreClient = PersistentStoreClientImpl(context: mock.getNewContext())
+        var fetchedEmployees: [Employee] = sut.fetch()
         
-        var fetchedEmployees: [Employee] = secondPersistentStoreClient.fetch()
-        
-        assertThat(fetchedEmployees.count, equalTo(1))
+        assertThat(fetchedEmployees, empty())
         assertThat(employee.age, equalTo(22))
         
         sut.saveChanges()
-        fetchedEmployees = secondPersistentStoreClient.fetch()
+        fetchedEmployees = sut.fetch()
         
         assertThat(fetchedEmployees, empty())
         assertThat(employee.age, nilValue())

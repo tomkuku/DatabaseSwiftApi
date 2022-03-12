@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 protocol PersistentStoreManager {
-    func getNewContext() -> NSManagedObjectContext
+    func createNewClient() -> PersistentStoreClient
 }
 
 final class PersistentStoreManagerImpl: PersistentStoreManager {
@@ -26,8 +26,11 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
         return moc
     }()
     
+    private var clients: [PersistentStoreClientImpl] = []
+    private var chlidrenContexts: Set<NSManagedObjectContext> = []
     private let storeName = "DatabaseApi"
     private let mode: Mode
+    private let notificationCenter = NotificationCenter.default
     
     private lazy var storeType: String = {
         switch mode {
@@ -73,11 +76,50 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
             Log.error("Master context saving faild with error: \(error.localizedDescription)")
             assertionFailure()
         }
+        
+        notificationCenter.removeObserver(self)
     }
     
-    func getNewContext() -> NSManagedObjectContext {
+    @objc private func clientDidSaved(notification: Notification) {
+        guard let triggerContex = notification.object as? NSManagedObjectContext else {
+            Log.error("Trigger context can not be found")
+            return
+        }
+        
+        print("triggerContex.name: ", triggerContex.name)
+        
+        for client in clients where client.context.name != triggerContex.name {
+            print("client.context.name: ", client.context.name)
+            client.context.mergeChanges(fromContextDidSave: notification)
+            notificationCenter.post(name: .NSManagedObjectContextObjectsDidMerge,
+                                    object: triggerContex,
+                                    userInfo: notification.userInfo)
+        }
+    }
+    
+    private func getObjectIDs(from notification: Notification, key: String) -> Set<NSManagedObjectID> {
+        guard let objects = notification.userInfo?[key] as? Set<NSManagedObject> else {
+            Log.debug("No ManagedObjects from notification")
+            return []
+        }
+        return Set(objects.compactMap { $0.objectID })
+    }
+    
+    func createNewClient() -> PersistentStoreClient {
         let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.parent = masterContext
-        return moc
+        moc.automaticallyMergesChangesFromParent = true
+        moc.name = UUID().uuidString
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(clientDidSaved(notification:)),
+                                       name: .NSManagedObjectContextDidSave,
+                                       object: moc)
+        
+        chlidrenContexts.insert(moc)
+        
+        let client = PersistentStoreClientImpl(context: moc)
+        clients.append(client)
+        return client
     }
 }

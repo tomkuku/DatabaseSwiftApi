@@ -10,6 +10,7 @@ import CoreData
 
 protocol EntityRepresentable: Hashable {
     var managedObject: NSManagedObject { get }
+    var managedObjectID: NSManagedObjectID { get }
     init(managedObject: NSManagedObject)
 }
 
@@ -25,6 +26,10 @@ extension EntityRepresentable {
 
 class EntityRepresenter: EntityRepresentable {
     var managedObject: NSManagedObject
+    
+    var managedObjectID: NSManagedObjectID {
+        managedObject.objectID
+    }
     
     required init(managedObject: NSManagedObject) {
         self.managedObject = managedObject

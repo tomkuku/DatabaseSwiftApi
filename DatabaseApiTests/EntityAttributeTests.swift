@@ -19,7 +19,7 @@ final class EntityAttributeTests: XCTestCase {
         super.setUp()
         
         let persistentStoreManager = PersistentStoreManagerImpl(mode: .test)
-        self.sut = PersistentStoreClientImpl(context: persistentStoreManager.getNewContext())
+        self.sut = persistentStoreManager.createNewClient()
     }
     
     override func tearDown() {
