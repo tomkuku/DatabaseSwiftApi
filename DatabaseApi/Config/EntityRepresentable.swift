@@ -8,26 +8,28 @@
 import Foundation
 import CoreData
 
+typealias DatabaseObjectID = NSManagedObjectID
+
 protocol EntityRepresentable: Hashable {
-    var managedObject: NSManagedObject { get }
-    var managedObjectID: NSManagedObjectID { get }
+//    var managedObject: NSManagedObject { get }
+    var managedObjectID: DatabaseObjectID { get }
     init(managedObject: NSManagedObject)
 }
 
 extension EntityRepresentable {
     func hash(into hasher: inout Hasher) {
-        hasher.combine(managedObject.objectID)
+        hasher.combine(managedObjectID)
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.managedObject.objectID == rhs.managedObject.objectID
+        lhs.managedObjectID == rhs.managedObjectID
     }
 }
 
 class EntityRepresenter: EntityRepresentable {
-    var managedObject: NSManagedObject
+    private var managedObject: NSManagedObject
     
-    var managedObjectID: NSManagedObjectID {
+    var managedObjectID: DatabaseObjectID {
         managedObject.objectID
     }
     

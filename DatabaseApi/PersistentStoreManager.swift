@@ -21,7 +21,8 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
     // MARK: Properties
     
     private lazy var masterContext: NSManagedObjectContext = {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        print("⭐️ Master context: ", Thread.current)
+        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.persistentStoreCoordinator = persistentStoreCoordinator
         return moc
     }()
@@ -46,7 +47,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
             let modelURL = Bundle.main.url(forResource: storeName, withExtension: "momd"),
             let mom = NSManagedObjectModel(contentsOf: modelURL)
         else {
-            Log.fatal("ManagedObjectModel not found")
+            Log.fatal("ManagedObjectModel not found.")
         }
         
         let storeFileName = "\(storeName).sqlite"
@@ -58,7 +59,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
         do {
             try poc.addPersistentStore(ofType: storeType, configurationName: nil, at: persistentStoreUrl, options: nil)
         } catch {
-            Log.error("Adding PersistentStore faild with error: \(error.localizedDescription)")
+            Log.fatal("Adding PersistentStore faild with error: \(error.localizedDescription).")
         }
         return poc
     }()
@@ -73,7 +74,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
                 try masterContext.save()
             }
         } catch {
-            Log.error("Master context saving faild with error: \(error.localizedDescription)")
+            Log.error("Master context saving faild with error: \(error.localizedDescription).")
             assertionFailure()
         }
         
@@ -82,24 +83,27 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
     
     @objc private func clientDidSaved(notification: Notification) {
         guard let triggerContex = notification.object as? NSManagedObjectContext else {
-            Log.error("Trigger context can not be found")
+            Log.error("Trigger context can not be found.")
             return
         }
         
-        print("triggerContex.name: ", triggerContex.name)
+        Log.debug("Context \(triggerContex) did save.")
         
-        for client in clients where client.context.name != triggerContex.name {
-            print("client.context.name: ", client.context.name)
-            client.context.mergeChanges(fromContextDidSave: notification)
-            notificationCenter.post(name: .NSManagedObjectContextObjectsDidMerge,
-                                    object: triggerContex,
-                                    userInfo: notification.userInfo)
+        for client in clients where client.context != triggerContex {
+            print("⭐️  client before merge:", Thread.current)
+            client.context.performAndWait {
+                client.context.mergeChanges(fromContextDidSave: notification)
+                print("⭐️  client after merge:", Thread.current)
+            }
         }
+        self.notificationCenter.post(name: .NSManagedObjectContextObjectsDidMerge,
+                                     object: triggerContex,
+                                     userInfo: notification.userInfo)
     }
     
     private func getObjectIDs(from notification: Notification, key: String) -> Set<NSManagedObjectID> {
         guard let objects = notification.userInfo?[key] as? Set<NSManagedObject> else {
-            Log.debug("No ManagedObjects from notification")
+            Log.debug("No ManagedObjects from notification.")
             return []
         }
         return Set(objects.compactMap { $0.objectID })
@@ -109,7 +113,6 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
         let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.parent = masterContext
         moc.automaticallyMergesChangesFromParent = true
-        moc.name = UUID().uuidString
         
         notificationCenter.addObserver(self,
                                        selector: #selector(clientDidSaved(notification:)),

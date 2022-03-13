@@ -23,10 +23,11 @@ protocol PersistentStoreClient {
     /**
      Calls handler method each time when persistent store was modified (insert, update, deleted).
      This method is called only when another client modifies store.
-     - Parameter handler: Code which is executes when persistent store was modified.
+     - Parameter handler: Code which is executes when persistent store was modified. Contains inserted and updated objects
+     and DatabaseObjectIDs of deleted objects.
      */
     func observeChanges<T: EntityRepresentable>(
-        handler: @escaping (_ inserted: [T], _ updated: [T], _ deletedIDs: [NSManagedObjectID]) -> Void)
+        handler: @escaping (_ inserted: [T], _ updated: [T], _ deletedIDs: [DatabaseObjectID]) -> Void)
 }
 
 extension PersistentStoreClient {
@@ -42,7 +43,7 @@ extension PersistentStoreClient {
 final class PersistentStoreClientImpl: PersistentStoreClient {
     
     let context: NSManagedObjectContext
-    
+        
     init(context: NSManagedObjectContext) {
         self.context = context
     }
@@ -52,15 +53,17 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
     }
     
     func saveChanges() {
-        guard context.hasChanges else {
-            Log.debug("Context doesn't have changes.")
-            return
-        }
-        
-        do {
-            try context.save()
-        } catch {
-            Log.error("Saving context faild with error: \(error.localizedDescription)")
+        context.performAndWait {
+            guard context.hasChanges else {
+                Log.debug("Context doesn't have changes.")
+                return
+            }
+            
+            do {
+                try context.save()
+            } catch {
+                Log.error("Saving context faild with error: \(error.localizedDescription).")
+            }
         }
     }
     
@@ -68,21 +71,34 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         context.rollback()
     }
     
-    func observeChanges<T: EntityRepresentable>(handler: @escaping ([T], [T], [NSManagedObjectID]) -> Void) {
+    func observeChanges<T: EntityRepresentable>(handler: @escaping ([T], [T], [DatabaseObjectID]) -> Void) {
         NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidMerge,
                                                object: nil,
-                                               queue: .current) { notification in
-            let inserted: [T] = notification.getModifiedEntitys(forKey: NSInsertedObjectsKey)
-            let updated: [T] = notification.getModifiedEntitys(forKey: NSUpdatedObjectsKey)
-            var deleted: [NSManagedObjectID] = []
-            
-            if let deletes = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
-                deleted = deletes.map { $0.objectID }
-            } else {
-                Log.debug("No deleted objects")
+                                               queue: nil) { [weak self] notification in
+            guard
+                let self = self,
+                let triggerContext = notification.object as? NSManagedObjectContext,
+                triggerContext != self.context
+            else {
+                Log.debug("Action of merging the same context has been stopped.")
+                return
             }
             
-            handler(inserted, updated, deleted)
+            self.context.perform {
+                print("⭐️  client observer block:", Thread.current)
+                
+                let inserted: [T] = notification.getModifiedEntitys(forKey: NSInsertedObjectsKey)
+                let updated: [T] = notification.getModifiedEntitys(forKey: NSUpdatedObjectsKey)
+                var deleted: [NSManagedObjectID] = []
+                
+                if let deletes = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
+                    deleted = deletes.map { $0.objectID }
+                } else {
+                    Log.debug("No deleted objects in notification.")
+                }
+                
+                handler(inserted, updated, deleted)
+            }
         }
     }
     
@@ -91,7 +107,10 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         guard let entity = NSEntityDescription.entity(forEntityName: entityName, in: context) else {
             Log.fatal("Entity with name \(entityName) not found!")
         }
-        let managedObject = NSManagedObject(entity: entity, insertInto: context)
+        var managedObject: NSManagedObject!
+        context.performAndWait {
+            managedObject = NSManagedObject(entity: entity, insertInto: context)
+        }
         return T.init(managedObject: managedObject)
     }
     
@@ -107,44 +126,30 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         do {
             objects = try context.fetch(fetchRequest)
         } catch {
-            Log.error("Fetching \(entityName) failed with error \(error.localizedDescription)")
+            Log.error("Fetching \(entityName) failed with error \(error.localizedDescription).")
         }
         
-        return objects.map {
-            T.init(managedObject: $0)
-        }
+        return objects.map { T.init(managedObject: $0) }
     }
     
     func deleteObject<T: EntityRepresentable>(_ object: T) {
-        context.delete(object.managedObject)
-    }
-}
-fileprivate extension NSManagedObjectContext {
-    func getExistingObject(for id: NSManagedObjectID) -> NSManagedObject? {
-        var object: NSManagedObject?
-        
-        do {
-            object = try existingObject(with: id)
-        } catch {
-            Log.error("Getting existing object failed with error: \(error.localizedDescription)")
-        }
-        return object
+        context.delete(context.getExistingObject(for: object.managedObjectID))
     }
 }
 
 extension Notification.Name {
     // swiftlint:disable:next identifier_name
     static var NSManagedObjectContextObjectsDidMerge: Self {
-        .init(rawValue: "NSManagedObjectContextObjectsDidChange")
+        .init(rawValue: "NSManagedObjectContextObjectsDidChange.")
     }
 }
 
 fileprivate extension Notification {
     func getModifiedEntitys<T: EntityRepresentable>(forKey key: String) -> [T] {
         guard let objects = self.userInfo?[key] as? Set<NSManagedObject> else {
-            Log.debug("No ManagedObjects from notification for key \(key)")
+            Log.debug("No modified ManagedObjects from notification for key \(key).")
             return []
         }
-        return objects.compactMap { T.init(managedObject: $0) }
+        return objects.map { T.init(managedObject: $0) }
     }
 }

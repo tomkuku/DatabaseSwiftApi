@@ -74,7 +74,13 @@ final class ToOneRelationship<T: EntityRepresentable>: EntityAttribute {
             }
             return T.init(managedObject: managedObject)
         }
-        set { databaseModelObject.set(newValue?.managedObject, forKey: name) }
+        set {
+            guard
+                let managedObjectID = newValue?.managedObjectID,
+                let managedObject = databaseModelObject.managedObjectContext?.getExistingObject(for: managedObjectID)
+            else { return }
+            
+            databaseModelObject.set(managedObject, forKey: name) }
     }
 }
 
@@ -102,8 +108,10 @@ final class ToManyRelationship<T: EntityRepresentable>: EntityAttribute {
         set {
             let set = databaseModelObject.mutableSetValue(forKey: name)
             set.removeAllObjects()
-            newValue.forEach {
-                set.add($0.managedObject)
+            for entity in newValue {
+                guard let managedObject = databaseModelObject.managedObjectContext?.getExistingObject(
+                        for: entity.managedObjectID) else { continue }
+                set.add(managedObject)
             }
         }
     }

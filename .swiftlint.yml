@@ -5,7 +5,6 @@ excluded:
   - DatabaseApi/ViewController.swift
 
 force_cast: warning
-
 force_try: warning
 
 line_length:
@@ -26,5 +25,6 @@ identifier_name:
 
 disabled_rules:
   - trailing_whitespace
+  - inclusive_language
 
 reporter: "xcode"

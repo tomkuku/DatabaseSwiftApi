@@ -13,6 +13,7 @@
 		8753A5A727D74FA800FB72A4 /* PersistentStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */; };
 		8753A5B627D75B1700FB72A4 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B527D75B1700FB72A4 /* Logging.swift */; };
 		8753A5B927D7674400FB72A4 /* DatabaseApi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B727D7674400FB72A4 /* DatabaseApi.xcdatamodeld */; };
+		876C03EE27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */; };
 		87775A5127DABFD700980557 /* PersistentStoreClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87775A5027DABFD700980557 /* PersistentStoreClientTests.swift */; };
 		87775A5327DAC21500980557 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87775A5227DAC21500980557 /* Fetchable.swift */; };
 		87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8AEF27D748D500565E65 /* AppDelegate.swift */; };
@@ -21,6 +22,8 @@
 		87AA8AF727D748D500565E65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AF527D748D500565E65 /* Main.storyboard */; };
 		87AA8AF927D748D600565E65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AF827D748D600565E65 /* Assets.xcassets */; };
 		87AA8AFC27D748D600565E65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AFA27D748D600565E65 /* LaunchScreen.storyboard */; };
+		87BF848527DE039900E62F93 /* employees_test_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 87BF848427DE039900E62F93 /* employees_test_list.json */; };
+		87BF848627DE039D00E62F93 /* employees_test_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 87BF848427DE039900E62F93 /* employees_test_list.json */; };
 		87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */; };
 		87CF90B927D9F0050003A3E9 /* Employee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B827D9F0050003A3E9 /* Employee.swift */; };
 		87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */; };
@@ -48,6 +51,7 @@
 		8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreManager.swift; sourceTree = "<group>"; };
 		8753A5B527D75B1700FB72A4 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		8753A5B827D7674400FB72A4 /* DatabaseApi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DatabaseApi.xcdatamodel; sourceTree = "<group>"; };
+		876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+getExistingObject.swift"; sourceTree = "<group>"; };
 		87775A5027DABFD700980557 /* PersistentStoreClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreClientTests.swift; sourceTree = "<group>"; };
 		87775A5227DAC21500980557 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		87AA8AEC27D748D500565E65 /* DatabaseApi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatabaseApi.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +63,7 @@
 		87AA8AFB27D748D600565E65 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		87AA8AFD27D748D600565E65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		87AA8B0727D749A400565E65 /* DatabaseApiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatabaseApiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		87BF848427DE039900E62F93 /* employees_test_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = employees_test_list.json; sourceTree = "<group>"; };
 		87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStoreClient.swift; sourceTree = "<group>"; };
 		87CF90B827D9F0050003A3E9 /* Employee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employee.swift; sourceTree = "<group>"; };
 		87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRepresentable.swift; sourceTree = "<group>"; };
@@ -109,6 +114,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		876C03EF27DD41100095FC08 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		87AA8AE327D748D400565E65 = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +156,7 @@
 				8753A5B527D75B1700FB72A4 /* Logging.swift */,
 				8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */,
 				87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */,
+				876C03EF27DD41100095FC08 /* Extensions */,
 				87CF90BB27D9F01F0003A3E9 /* Config */,
 				87CF90BA27D9F0080003A3E9 /* Models */,
 			);
@@ -155,6 +169,7 @@
 				87CF90C427DA24E60003A3E9 /* EntityAttributeTests.swift */,
 				87775A5027DABFD700980557 /* PersistentStoreClientTests.swift */,
 				8742CAAE27DBE976001D2D1B /* PersistentStoreManagerTests.swift */,
+				87BF848427DE039900E62F93 /* employees_test_list.json */,
 			);
 			path = DatabaseApiTests;
 			sourceTree = "<group>";
@@ -265,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				87AA8AFC27D748D600565E65 /* LaunchScreen.storyboard in Resources */,
+				87BF848627DE039D00E62F93 /* employees_test_list.json in Resources */,
 				87AA8AF927D748D600565E65 /* Assets.xcassets in Resources */,
 				87AA8AF727D748D500565E65 /* Main.storyboard in Resources */,
 			);
@@ -274,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87BF848527DE039900E62F93 /* employees_test_list.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +393,7 @@
 				873E36F627DA47D700BA38C8 /* Company.swift in Sources */,
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
 				87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */,
+				876C03EE27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift in Sources */,
 				87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

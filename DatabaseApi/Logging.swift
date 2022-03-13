@@ -14,20 +14,20 @@ final class Log {
     
     private init() { }
     
-    static func debug(_ message: String, file: String = #file, line: Int = #line) {
-        os_log("\nℹ️ %@:%d: %@", log: log, type: .debug, file.fileName, line, message)
+    static func debug(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+        os_log("\nℹ️ %@ %@:%d: %@", log: log, type: .debug, file.fileName, function, line, message)
     }
     
-    static func warning(_ message: String, file: String = #file, line: Int = #line) {
-        os_log("\n⚠️ %@:%d: %@", log: log, type: .default, file.fileName, line, message)
+    static func warning(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+        os_log("\n⚠️ %@: %@%d: %@", log: log, type: .default, file.fileName, function, line, message)
     }
     
-    static func error(_ message: String, file: String = #file, line: Int = #line) {
-        os_log("\n🚨 %@:%d: %@", log: log, type: .error, file.fileName, line, message)
+    static func error(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
+        os_log("\n🚨 %@ %@:%d: %@", log: log, type: .error, file.fileName, function, line, message)
     }
     
-    static func fatal(_ message: String, file: String = #file, line: Int = #line) -> Never {
-        os_log("\n⛔️ %@:%d: %@", log: log, type: .fault, file.fileName, line, message)
+    static func fatal(_ message: String, file: String = #file, function: String = #function, line: Int = #line) -> Never {
+        os_log("\n⛔️ %@ %@:%d: %@", log: log, type: .fault, file.fileName, function, line, message)
         fatalError("")
     }
 }
