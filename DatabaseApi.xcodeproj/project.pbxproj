@@ -24,6 +24,7 @@
 		87AA8AFC27D748D600565E65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87AA8AFA27D748D600565E65 /* LaunchScreen.storyboard */; };
 		87BF848527DE039900E62F93 /* employees_test_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 87BF848427DE039900E62F93 /* employees_test_list.json */; };
 		87BF848627DE039D00E62F93 /* employees_test_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 87BF848427DE039900E62F93 /* employees_test_list.json */; };
+		87BF849327DE244C00E62F93 /* NotificationName+ObjectDidChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BF849227DE244C00E62F93 /* NotificationName+ObjectDidChange.swift */; };
 		87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */; };
 		87CF90B927D9F0050003A3E9 /* Employee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B827D9F0050003A3E9 /* Employee.swift */; };
 		87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */; };
@@ -64,6 +65,7 @@
 		87AA8AFD27D748D600565E65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		87AA8B0727D749A400565E65 /* DatabaseApiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatabaseApiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		87BF848427DE039900E62F93 /* employees_test_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = employees_test_list.json; sourceTree = "<group>"; };
+		87BF849227DE244C00E62F93 /* NotificationName+ObjectDidChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+ObjectDidChange.swift"; sourceTree = "<group>"; };
 		87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStoreClient.swift; sourceTree = "<group>"; };
 		87CF90B827D9F0050003A3E9 /* Employee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employee.swift; sourceTree = "<group>"; };
 		87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRepresentable.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */,
+				87BF849227DE244C00E62F93 /* NotificationName+ObjectDidChange.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
 				87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */,
 				876C03EE27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift in Sources */,
+				87BF849327DE244C00E62F93 /* NotificationName+ObjectDidChange.swift in Sources */,
 				87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

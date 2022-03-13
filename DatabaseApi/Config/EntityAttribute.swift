@@ -96,9 +96,10 @@ final class ToOneRelationship<T: EntityRepresentable>: EntityAttribute {
 final class ToManyRelationship<T: EntityRepresentable>: EntityAttribute {
     var wrappedValue: Set<T> {
         get {
-            guard let objects = databaseModelObject.mutableSetValue(forKey: name).allObjects as? [NSManagedObject] else {
-                Log.debug("Converting NSMutableSet to array of NSManagedObjects faild!")
-                return []
+            var objects: [NSManagedObject] = []
+            
+            databaseModelObject.managedObjectContext?.performAndWait {
+                objects = databaseModelObject.mutableSetValue(forKey: name).allObjects as? [NSManagedObject]  ?? []
             }
             
             return Set(objects.map {
@@ -106,12 +107,14 @@ final class ToManyRelationship<T: EntityRepresentable>: EntityAttribute {
             })
         }
         set {
-            let set = databaseModelObject.mutableSetValue(forKey: name)
-            set.removeAllObjects()
-            for entity in newValue {
-                guard let managedObject = databaseModelObject.managedObjectContext?.getExistingObject(
-                        for: entity.managedObjectID) else { continue }
-                set.add(managedObject)
+            databaseModelObject.managedObjectContext?.performAndWait {
+                let set = databaseModelObject.mutableSetValue(forKey: name)
+                set.removeAllObjects()
+                for entity in newValue {
+                    guard let managedObject = databaseModelObject.managedObjectContext?.getExistingObject(
+                            for: entity.managedObjectID) else { continue }
+                    set.add(managedObject)
+                }
             }
         }
     }
@@ -119,18 +122,24 @@ final class ToManyRelationship<T: EntityRepresentable>: EntityAttribute {
 
 extension NSManagedObject {
     func getValue<T>(forKey key: String) -> T? {
-        willAccessValue(forKey: key)
-        defer { didAccessValue(forKey: key) }
-        return primitiveValue(forKey: key) as? T
+        var value: T?
+        managedObjectContext?.performAndWait {
+            willAccessValue(forKey: key)
+            defer { didAccessValue(forKey: key) }
+            value = primitiveValue(forKey: key) as? T
+        }
+        return value
     }
     
     func set(_ value: Any?, forKey key: String) {
-        willChangeValue(forKey: key)
-        defer { didChangeValue(forKey: key) }
-        guard let value = value else {
-            setPrimitiveValue(nil, forKey: key)
-            return
+        managedObjectContext?.performAndWait {
+            willChangeValue(forKey: key)
+            defer { didChangeValue(forKey: key) }
+            guard let value = value else {
+                setPrimitiveValue(nil, forKey: key)
+                return
+            }
+            setPrimitiveValue(value, forKey: key)
         }
-        setPrimitiveValue(value, forKey: key)
     }
 }

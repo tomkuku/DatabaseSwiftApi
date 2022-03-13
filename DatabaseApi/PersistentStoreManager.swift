@@ -21,8 +21,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
     // MARK: Properties
     
     private lazy var masterContext: NSManagedObjectContext = {
-        print("⭐️ Master context: ", Thread.current)
-        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.persistentStoreCoordinator = persistentStoreCoordinator
         return moc
     }()
@@ -69,13 +68,15 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
     }
     
     deinit {
-        do {
-            if masterContext.hasChanges {
-                try masterContext.save()
+        masterContext.performAndWait {
+            do {
+                if masterContext.hasChanges {
+                    try masterContext.save()
+                }
+            } catch {
+                Log.error("Master context saving faild with error: \(error.localizedDescription).")
+                assertionFailure()
             }
-        } catch {
-            Log.error("Master context saving faild with error: \(error.localizedDescription).")
-            assertionFailure()
         }
         
         notificationCenter.removeObserver(self)
@@ -90,10 +91,8 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
         Log.debug("Context \(triggerContex) did save.")
         
         for client in clients where client.context != triggerContex {
-            print("⭐️  client before merge:", Thread.current)
             client.context.performAndWait {
                 client.context.mergeChanges(fromContextDidSave: notification)
-                print("⭐️  client after merge:", Thread.current)
             }
         }
         self.notificationCenter.post(name: .NSManagedObjectContextObjectsDidMerge,

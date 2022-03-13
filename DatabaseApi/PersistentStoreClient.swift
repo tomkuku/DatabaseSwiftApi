@@ -43,7 +43,7 @@ extension PersistentStoreClient {
 final class PersistentStoreClientImpl: PersistentStoreClient {
     
     let context: NSManagedObjectContext
-        
+    
     init(context: NSManagedObjectContext) {
         self.context = context
     }
@@ -68,7 +68,9 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
     }
     
     func revertChanges() {
-        context.rollback()
+        context.performAndWait {
+            context.rollback()
+        }
     }
     
     func observeChanges<T: EntityRepresentable>(handler: @escaping ([T], [T], [DatabaseObjectID]) -> Void) {
@@ -84,9 +86,7 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
                 return
             }
             
-            self.context.perform {
-                print("⭐️  client observer block:", Thread.current)
-                
+            self.context.perform {                
                 let inserted: [T] = notification.getModifiedEntitys(forKey: NSInsertedObjectsKey)
                 let updated: [T] = notification.getModifiedEntitys(forKey: NSUpdatedObjectsKey)
                 var deleted: [NSManagedObjectID] = []
@@ -123,24 +123,21 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         
         var objects: [NSManagedObject] = []
         
-        do {
-            objects = try context.fetch(fetchRequest)
-        } catch {
-            Log.error("Fetching \(entityName) failed with error \(error.localizedDescription).")
+        context.performAndWait {
+            do {
+                objects = try context.fetch(fetchRequest)
+            } catch {
+                Log.error("Fetching \(entityName) failed with error \(error.localizedDescription).")
+            }
         }
         
         return objects.map { T.init(managedObject: $0) }
     }
     
     func deleteObject<T: EntityRepresentable>(_ object: T) {
-        context.delete(context.getExistingObject(for: object.managedObjectID))
-    }
-}
-
-extension Notification.Name {
-    // swiftlint:disable:next identifier_name
-    static var NSManagedObjectContextObjectsDidMerge: Self {
-        .init(rawValue: "NSManagedObjectContextObjectsDidChange.")
+        context.performAndWait {
+            context.delete(context.getExistingObject(for: object.managedObjectID))
+        }
     }
 }
 
