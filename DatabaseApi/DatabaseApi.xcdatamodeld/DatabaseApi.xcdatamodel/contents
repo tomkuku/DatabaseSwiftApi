@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="BaseObject" representedClassName="BaseObject" isAbstract="YES" syncable="YES" codeGenerationType="class"/>
+    <entity name="Company" representedClassName="" parentEntity="BaseObject" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="street_name" optional="YES" attributeType="String"/>
+        <relationship name="employees" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Employee" inverseName="job" inverseEntity="Employee"/>
+    </entity>
+    <entity name="Employee" representedClassName="" parentEntity="BaseObject" syncable="YES">
+        <attribute name="age" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" defaultValueString="-"/>
+        <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Company" inverseName="employees" inverseEntity="Company"/>
+    </entity>
+    <elements>
+        <element name="Company" positionX="-54" positionY="18" width="128" height="74"/>
+        <element name="Employee" positionX="-63" positionY="-18" width="128" height="74"/>
+        <element name="BaseObject" positionX="-63" positionY="27" width="128" height="29"/>
+    </elements>
+</model>

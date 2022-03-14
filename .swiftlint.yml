@@ -1,0 +1,30 @@
+excluded:
+  - Pods
+  - DatabaseApi/AppDelegate.swift
+  - DatabaseApi/SceneDelegate.swift
+  - DatabaseApi/ViewController.swift
+
+force_cast: warning
+force_try: warning
+
+line_length:
+    warning: 130
+    error: 150
+    ignores_comments: true
+
+file_length:
+  warning: 500
+  error: 1200
+
+identifier_name:
+  min_length:
+    error: 2
+  max_length:
+    warning: 30
+    error: 35
+
+disabled_rules:
+  - trailing_whitespace
+  - inclusive_language
+
+reporter: "xcode"
