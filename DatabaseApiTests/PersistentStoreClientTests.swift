@@ -17,7 +17,7 @@ class PersistentStoreClientTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        mock = PersistentStoreManagerImpl(mode: .test)
+        mock = PersistentStoreManagerImpl(mode: .app)
         sut = mock.createNewClient()
     }
     
@@ -118,6 +118,7 @@ class PersistentStoreClientTests: XCTestCase {
         employee.age = 22
         
         sut.saveChanges()
+
         sut.deleteObject(employee)
         
         var fetchedEmployees: [Employee] = sut.fetch()
@@ -130,5 +131,50 @@ class PersistentStoreClientTests: XCTestCase {
         
         assertThat(fetchedEmployees, empty())
         assertThat(employee.age, nilValue())
+    }
+    
+    func test__delete_many_saved_objects() {
+        let emplyees = createEmployees(forClient: sut)
+        
+        sut.saveChanges()
+        try! mock.masterContext.save()
+        
+        var fetchedEmployees: [Employee] = sut.fetch()
+        
+        assertThat(fetchedEmployees.count, equalTo(emplyees.count))
+        
+        sut.deleteMany(object: Employee.self, predicate: .ageGreatThen(12))
+        
+        fetchedEmployees = sut.fetch()
+        
+        assertThat(fetchedEmployees, empty())
+    }
+    
+    @discardableResult
+    private func createEmployees(forClient client: PersistentStoreClient) -> [Employee] {
+        // swiftlint:disable force_cast
+        let fileName = "employees_test_list"
+        let url = Bundle.main.url(forResource: fileName, withExtension: "json")!
+        var data: Data!
+        var jsonArray: [NSDictionary] = []
+        
+        do {
+            data = try Data(contentsOf: url)
+            jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [NSDictionary]
+        } catch {
+            fatalError()
+        }
+        
+        var employees: [Employee] = []
+        
+        jsonArray.forEach {
+            let employee: Employee = client.createObject()
+            employee.name = $0.value(forKey: "name") as! String
+            employee.age = ($0.value(forKey: "age") as! Int)
+            employees.append(employee)
+        }
+        
+        return employees
+        // swiftlint:enable force_cast
     }
 }

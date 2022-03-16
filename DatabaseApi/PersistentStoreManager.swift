@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 protocol PersistentStoreManager {
+    var masterContext: NSManagedObjectContext { get }
     func createNewClient() -> PersistentStoreClient
 }
 
@@ -20,9 +21,16 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
     
     // MARK: Properties
     
-    private lazy var masterContext: NSManagedObjectContext = {
+    lazy var masterContext: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.persistentStoreCoordinator = persistentStoreCoordinator
+        return moc
+    }()
+    
+    private(set) lazy var viewContext: NSManagedObjectContext = {
+        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        moc.parent = masterContext
+        moc.automaticallyMergesChangesFromParent = true
         return moc
     }()
     
@@ -106,6 +114,13 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
             return []
         }
         return Set(objects.compactMap { $0.objectID })
+    }
+    
+    func createNewBackgroundContex() -> NSManagedObjectContext {
+        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        moc.parent = viewContext
+        moc.automaticallyMergesChangesFromParent = true
+        return moc
     }
     
     func createNewClient() -> PersistentStoreClient {

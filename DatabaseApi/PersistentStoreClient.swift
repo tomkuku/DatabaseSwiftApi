@@ -28,6 +28,8 @@ protocol PersistentStoreClient {
      */
     func observeChanges<T: EntityRepresentable>(
         handler: @escaping (_ inserted: [T], _ updated: [T], _ deletedIDs: [DatabaseObjectID]) -> Void)
+    
+    func deleteMany<T: Fetchable>(object: T.Type, predicate: T.Filter)
 }
 
 extension PersistentStoreClient {
@@ -58,7 +60,7 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
                 Log.debug("Context doesn't have changes.")
                 return
             }
-            
+                        
             do {
                 try context.save()
             } catch {
@@ -138,6 +140,40 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         context.performAndWait {
             context.delete(context.getExistingObject(for: object.managedObjectID))
         }
+    }
+    
+    func deleteMany<T: Fetchable>(object: T.Type, predicate: T.Filter) {
+        let entityName = String(describing: T.self)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        deleteRequest.resultType = .resultTypeObjectIDs
+        
+        var batchDeleteResult: NSBatchDeleteResult?
+                
+        for store in context.persistentStoreCoordinator?.persistentStores ?? [] where store.type == NSSQLiteStoreType {
+            Log.error("Store \(store) is not NSSQLiteStoreType type.")
+            return
+        }
+        
+        let objectIDArray = batchDeleteResult?.result as? [NSManagedObjectID]
+        let deletedObjects: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDArray]
+        
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects, into: [context])
+    }
+        }
+        
+        do {
+            batchDeleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
+        } catch {
+            Log.error("Executing batchDeleteRequest failed with error \(error.localizedDescription)")
+        }
+        
+        let objectIDArray = batchDeleteResult?.result as? [NSManagedObjectID]
+        let deletedObjects: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDArray]
+        
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects,
+                                            into: [context])
     }
 }
 
