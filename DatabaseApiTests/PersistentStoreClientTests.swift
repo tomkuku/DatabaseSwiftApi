@@ -166,9 +166,30 @@ class PersistentStoreClientTests: XCTestCase {
         
         sut.insertMany(Employee.self, objects: jsonArray)
                 
-        var fetchedEmployees: [Employee] = sut.fetch()
+        let fetchedEmployees: [Employee] = sut.fetch()
                 
         assertThat(fetchedEmployees.count, equalTo(jsonArray.count))
+    }
+    
+    func test__update_many() {
+        createEmployees(forClient: sut)
+        
+        sut.saveChanges()
+        try? mock.masterContext.save()
+        
+        sut.updateMany(entity: Employee.self, filter: .ageGreatThen(30), propertiesToUpdate: ["name": "new name"])
+        
+        let fetchedEmployees: [Employee] = sut.fetch()
+        
+       let isAllEmployeesUpdated = fetchedEmployees.allSatisfy { employee in
+            if employee.age! > 30 {
+                return employee.name == "new name"
+            } else {
+                return true
+            }
+        }
+        
+        assertThat(isAllEmployeesUpdated == true)
     }
     
     @discardableResult

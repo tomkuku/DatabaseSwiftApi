@@ -31,6 +31,7 @@ protocol PersistentStoreClient {
     
     func deleteMany<T: Fetchable>(object: T.Type, predicate: T.Filter)
     func insertMany<T: Fetchable>(_ entity: T.Type, objects: [[String: Any]])
+    func updateMany<T: Fetchable>(entity: T.Type, filter: T.Filter?, propertiesToUpdate: [AnyHashable: Any])
 }
 
 extension PersistentStoreClient {
@@ -175,18 +176,31 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
             NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
         }
     }
+    
+    func updateMany<T: Fetchable>(entity: T.Type, filter: T.Filter?, propertiesToUpdate: [AnyHashable: Any]) {
+        let entityName = String(describing: T.self)
+        let request = NSBatchUpdateRequest(entityName: entityName)
+        request.predicate = filter?.predicate
+        request.propertiesToUpdate = propertiesToUpdate
+        request.resultType = .updatedObjectIDsResultType
+        
+        var result: NSBatchUpdateResult?
         
         do {
-            batchDeleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
+            result = try context.execute(request) as? NSBatchUpdateResult
         } catch {
-            Log.error("Executing batchDeleteRequest failed with error \(error.localizedDescription)")
+            Log.error("Updating many failed with error: \(error.localizedDescription)")
         }
         
-        let objectIDArray = batchDeleteResult?.result as? [NSManagedObjectID]
-        let deletedObjects: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDArray]
+        guard let objectIDs = result?.result as? [NSManagedObjectID], objectIDs.count > 0 else {
+            Log.error("No updated objectIDs")
+            return
+        }
         
-        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects,
-                                            into: [context])
+        let save = [NSUpdatedObjectIDsKey: objectIDs]
+        
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
     }
 }
 
