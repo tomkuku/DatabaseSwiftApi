@@ -150,6 +150,27 @@ class PersistentStoreClientTests: XCTestCase {
         assertThat(fetchedEmployees, empty())
     }
     
+    func test__insert_many_objects() {
+        let fileName = "employees_test_list"
+        let url = Bundle.main.url(forResource: fileName, withExtension: "json")!
+        var data: Data!
+        var jsonArray: [[String: Any]] = []
+        
+        do {
+            data = try Data(contentsOf: url)
+            // swiftlint:disable:next force_cast
+            jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [[String: Any]]
+        } catch {
+            fatalError()
+        }
+        
+        sut.insertMany(Employee.self, objects: jsonArray)
+                
+        var fetchedEmployees: [Employee] = sut.fetch()
+                
+        assertThat(fetchedEmployees.count, equalTo(jsonArray.count))
+    }
+    
     @discardableResult
     private func createEmployees(forClient client: PersistentStoreClient) -> [Employee] {
         // swiftlint:disable force_cast

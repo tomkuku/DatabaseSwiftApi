@@ -30,6 +30,7 @@ protocol PersistentStoreClient {
         handler: @escaping (_ inserted: [T], _ updated: [T], _ deletedIDs: [DatabaseObjectID]) -> Void)
     
     func deleteMany<T: Fetchable>(object: T.Type, predicate: T.Filter)
+    func insertMany<T: Fetchable>(_ entity: T.Type, objects: [[String: Any]])
 }
 
 extension PersistentStoreClient {
@@ -161,7 +162,19 @@ final class PersistentStoreClientImpl: PersistentStoreClient {
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects, into: [context])
     }
+    
+    func insertMany<T: Fetchable>(_ entity: T.Type, objects: [[String: Any]]) {
+        let entityName = String(describing: T.self)
+        let batchInsertRequest = NSBatchInsertRequest(entityName: entityName, objects: objects)
+        batchInsertRequest.resultType = .objectIDs
+        
+        let result = try? context.execute(batchInsertRequest) as? NSBatchInsertResult
+        
+        if let objectIDs = result?.result as? [NSManagedObjectID], objectIDs.count > 0 {
+            let save = [NSInsertedObjectsKey: objectIDs]
+            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
         }
+    }
         
         do {
             batchDeleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
