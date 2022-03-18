@@ -99,4 +99,43 @@ final class DataStoreTests: XCTestCase {
         assertThat(fetchedEmployee?.name, equalTo("Mark"))
         assertThat(fetchedEmployee?.age, equalTo(29))
     }
+    
+    // MARK: Delete
+    
+    func test__delete_not_saved_object() {
+        let employee: Employee = sut.createObject()
+        employee.age = 22
+        
+        sut.deleteObject(employee)
+        
+        let fetchedEmployees: [Employee] = sut.fetch()
+        
+        assertThat(fetchedEmployees, empty())
+        assertThat(employee.age, nilValue())
+        
+    }
+    
+    func test__delete_saved_object() {
+        let employee: Employee = sut.createObject()
+        employee.age = 22
+        
+        sut.saveChanges()
+        sut.deleteObject(employee)
+        
+        var fetchedEmployees: [Employee] = sut.fetch()
+                
+        fetchedEmployees = sut.fetch()
+        
+        assertThat(fetchedEmployees, empty())
+        assertThat(employee.age, equalTo(22))
+        
+        // save afert delete
+        
+        sut.saveChanges()
+        
+        fetchedEmployees = sut.fetch()
+        
+        assertThat(fetchedEmployees, empty())
+        assertThat(employee.age, nilValue())
+    }
 }

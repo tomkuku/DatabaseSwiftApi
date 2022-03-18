@@ -12,6 +12,7 @@ protocol DataStore {
     func createObject<T: EntityRepresentable>() -> T
     func saveChanges()
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T]
+    func deleteObject<T: EntityRepresentable>(_ object: T)
 }
 
 extension DataStore {
@@ -70,5 +71,9 @@ final class DataStoreImpl: DataStore {
         }
         
         return objects.map { T.init(managedObject: $0) }
+    }
+    
+    func deleteObject<T: EntityRepresentable>(_ object: T) {
+        context.delete(context.getExistingObject(for: object.managedObjectID))
     }
 }

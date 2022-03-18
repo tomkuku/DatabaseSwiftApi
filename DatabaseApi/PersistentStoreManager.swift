@@ -124,7 +124,7 @@ final class PersistentStoreManagerImpl: PersistentStoreManager {
     }
     
     func createNewClient() -> PersistentStoreClient {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = masterContext
         moc.automaticallyMergesChangesFromParent = true
         
