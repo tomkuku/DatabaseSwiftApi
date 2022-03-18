@@ -11,6 +11,7 @@ import CoreData
 protocol DataStore {
     func createObject<T: EntityRepresentable>() -> T
     func saveChanges()
+    func revertUnsavedChanges()
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T]
     func deleteObject<T: EntityRepresentable>(_ object: T)
 }
@@ -53,6 +54,10 @@ final class DataStoreImpl: DataStore {
         } catch {
             Log.error("Saving context failed with error \(error.localizedDescription)")
         }
+    }
+    
+    func revertUnsavedChanges() {
+        context.rollback()
     }
     
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T] {

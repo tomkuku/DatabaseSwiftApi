@@ -29,7 +29,7 @@ final class DataStoreTests: XCTestCase {
         super.tearDown()
     }
     
-    // MARK: Save + Fetch
+    // MARK: Create + Save + Fetch
     
     func test__fetch_from_empty_store() {
         let fetchedEmployees: [Employee] = sut.fetch()
@@ -137,5 +137,37 @@ final class DataStoreTests: XCTestCase {
         
         assertThat(fetchedEmployees, empty())
         assertThat(employee.age, nilValue())
+    }
+    
+    // MARK: RevertUnsavedChanes
+    
+    func test__revert_changes_not_saved_client() {
+        let employee1: Employee = sut.createObject()
+        employee1.age = 22
+             
+        sut.saveChanges()
+        
+        employee1.age = 23
+                
+        let employee2: Employee = sut.createObject()
+        employee2.age = 45
+        
+        sut.revertUnsavedChanges()
+        
+        assertThat(employee1.age, equalTo(22))
+        assertThat(employee2.age, nilValue())
+    }
+    
+    func test__revert_changes_saved_client() {
+        let employee: Employee = sut.createObject()
+        employee.age = 22
+        
+        sut.saveChanges()
+        sut.revertUnsavedChanges()
+        
+        let fetchedEmployees: [Employee] = sut.fetch()
+        
+        assertThat(fetchedEmployees.count, equalTo(1))
+        assertThat(employee.age, equalTo(22))
     }
 }
