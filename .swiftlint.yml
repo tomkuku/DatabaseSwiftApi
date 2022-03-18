@@ -7,6 +7,12 @@ excluded:
 force_cast: warning
 force_try: warning
 
+vertical_whitespace:
+  severity: error
+
+unused_import:
+  severity: error
+
 line_length:
     warning: 130
     error: 150
