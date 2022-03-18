@@ -78,4 +78,25 @@ final class DataStoreTests: XCTestCase {
         assertThat(firstFetchedEmployee?.name, equalTo("Mark"))
         assertThat(firstFetchedEmployee?.age, equalTo(29))
     }
+    
+    func test__fetch_first_object() {
+        let employee1: Employee = sut.createObject()
+        employee1.age = 23
+        employee1.name = "John"
+        
+        let employee2: Employee = sut.createObject()
+        employee2.age = 31
+        employee2.name = "Kate"
+        
+        let employee3: Employee = sut.createObject()
+        employee3.age = 29
+        employee3.name = "Mark"
+        
+        sut.saveChanges()
+        
+        let fetchedEmployee: Employee? = sut.fetchFirst(filter: .ageGreatThen(23), sorting: [.ageAscending])
+        
+        assertThat(fetchedEmployee?.name, equalTo("Mark"))
+        assertThat(fetchedEmployee?.age, equalTo(29))
+    }
 }

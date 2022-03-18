@@ -18,6 +18,10 @@ extension DataStore {
     func fetch<T: Fetchable>(filter: T.Filter? = nil, sorting: [T.Sorting] = [], fetchLimit: Int? = nil) -> [T] {
         fetch(filter: filter, sorting: sorting, fetchLimit: fetchLimit)
     }
+    
+    func fetchFirst<T: Fetchable>(filter: T.Filter? = nil, sorting: [T.Sorting] = []) -> T? {
+        fetch(filter: filter, sorting: sorting, fetchLimit: 1).first
+    }
 }
 
 final class DataStoreImpl: DataStore {
