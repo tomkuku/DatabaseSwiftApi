@@ -11,7 +11,6 @@ import CoreData
 typealias DatabaseObjectID = NSManagedObjectID
 
 protocol EntityRepresentable: Hashable {
-//    var managedObject: NSManagedObject { get }
     var managedObjectID: DatabaseObjectID { get }
     init(managedObject: NSManagedObject)
 }

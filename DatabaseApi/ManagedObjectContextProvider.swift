@@ -37,7 +37,7 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
         return moc
     }()
     
-    private let storeName = "DatabaseApi"
+    private var storeName = "DatabaseApi"
     private let mode: Mode
     private let notificationCenter = NotificationCenter.default
     
@@ -61,7 +61,7 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
         let storeFileName = "\(storeName).sqlite"
         let documentsDirectoryUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let persistentStoreUrl = documentsDirectoryUrl.appendingPathComponent(storeFileName)
-        
+
         let poc = NSPersistentStoreCoordinator(managedObjectModel: mom)
         
         do {
@@ -72,8 +72,11 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
         return poc
     }()
     
-    init(mode: Mode = .app) {
+    init(mode: Mode = .app, storeName: String? = nil) {
         self.mode = mode
+        
+        guard storeName != nil else { return }
+        self.storeName = storeName!
     }
     
     func createNewBackgroundContext() -> NSManagedObjectContext {

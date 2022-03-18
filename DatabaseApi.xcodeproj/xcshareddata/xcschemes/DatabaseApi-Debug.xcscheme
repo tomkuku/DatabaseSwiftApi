@@ -37,6 +37,14 @@
                BlueprintName = "DatabaseApiTests"
                ReferencedContainer = "container:DatabaseApi.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "PersistentStoreClientTests">
+               </Test>
+               <Test
+                  Identifier = "PersistentStoreManagerTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -60,6 +68,12 @@
             ReferencedContainer = "container:DatabaseApi.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.ConcurrencyDebug 1"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Debug"
