@@ -19,7 +19,7 @@ final class DataStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        mock = ManagedObjectContextProviderImpl(mode: .test)
+        mock = ManagedObjectContextProviderImpl(mode: .test("com.test.store.name"))
         sut = DataStoreImpl(context: mock.mainContext)
     }
     
