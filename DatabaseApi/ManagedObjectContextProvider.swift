@@ -16,7 +16,7 @@ protocol ManagedObjectContextProvider {
     var mainContext: NSManagedObjectContext { get }
     /**
      It's special Context to be used only on it's private dispatch queue.
-     You can use is to demanding operations like: deleteMany, insertMany, updateMany.
+     You can use it to demanding operations like: deleteMany, insertMany, updateMany.
      */
     func createNewBackgroundContext() -> NSManagedObjectContext
 }
@@ -29,6 +29,8 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
     }
     
     // MARK: Properties
+    
+    private static let defaultStoreName = "DatabaseApi"
     
     private let storeName: String
     private let mode: Mode
@@ -47,21 +49,25 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
         return documentsDirectoryUrl.appendingPathComponent(storeFileName)
     }()
     
-    private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+    private let managedObjectModel: NSManagedObjectModel = {
         guard
             let modelURL = Bundle.main.url(forResource: "DatabaseApi", withExtension: "momd"),
             let mom = NSManagedObjectModel(contentsOf: modelURL)
         else {
             Log.fatal("ManagedObjectModel not found.")
         }
-        
-        let poc = NSPersistentStoreCoordinator(managedObjectModel: mom)
+        return mom
+    }()
+    
+    private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+        let poc = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         
         if case .test = mode {
             do {
                 try poc.destroyPersistentStore(at: persistentStoreUrl, ofType: NSSQLiteStoreType, options: nil)
+                Log.debug("Destroyed PersistentStore at url: \(persistentStoreUrl).")
             } catch {
-                Log.error("Destroying persistent store failed with error: \(error.localizedDescription)")
+                Log.fatal("Destroying PersistentStore failed with error: \(error.localizedDescription).")
             }
         }
         
@@ -70,6 +76,7 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
                                        configurationName: nil,
                                        at: persistentStoreUrl,
                                        options: nil)
+            Log.debug("Added PersistentStore at url: \(persistentStoreUrl).")
         } catch {
             Log.fatal("Adding PersistentStore faild with error: \(error.localizedDescription).")
         }
@@ -79,7 +86,7 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
     init(mode: Mode = .app) {
         switch mode {
         case .app:
-            storeName = "DatabaseApi"
+            storeName = ManagedObjectContextProviderImpl.defaultStoreName
         case .test(let storeName):
             self.storeName = storeName
         }
