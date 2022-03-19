@@ -20,7 +20,7 @@ class BackgorundDataStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mock = ManagedObjectContextProviderImpl(mode: .test("com.test.background.store.name"))
-        sut = DataStoreImpl(context: mock.createNewBackgroundContext())
+        sut = BackgroundDataStoreImpl(contextProvider: mock)
     }
     
     override func tearDown() {

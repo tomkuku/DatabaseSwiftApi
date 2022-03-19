@@ -15,6 +15,9 @@
 		8753A5B927D7674400FB72A4 /* DatabaseApi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B727D7674400FB72A4 /* DatabaseApi.xcdatamodeld */; };
 		876C03EE27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */; };
 		87775A5327DAC21500980557 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87775A5227DAC21500980557 /* Fetchable.swift */; };
+		87A1CC8727E6689300D2503F /* MainDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1CC8627E6689300D2503F /* MainDataStore.swift */; };
+		87A1CC8927E6695100D2503F /* BackgroundDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1CC8827E6695100D2503F /* BackgroundDataStore.swift */; };
+		87A1CC8B27E66AAF00D2503F /* EntityRepresentable+entityName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1CC8A27E66AAF00D2503F /* EntityRepresentable+entityName.swift */; };
 		87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8AEF27D748D500565E65 /* AppDelegate.swift */; };
 		87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8AF127D748D500565E65 /* SceneDelegate.swift */; };
 		87AA8AF427D748D500565E65 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8AF327D748D500565E65 /* ViewController.swift */; };
@@ -54,6 +57,9 @@
 		8753A5B827D7674400FB72A4 /* DatabaseApi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DatabaseApi.xcdatamodel; sourceTree = "<group>"; };
 		876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+getExistingObject.swift"; sourceTree = "<group>"; };
 		87775A5227DAC21500980557 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
+		87A1CC8627E6689300D2503F /* MainDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDataStore.swift; sourceTree = "<group>"; };
+		87A1CC8827E6695100D2503F /* BackgroundDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDataStore.swift; sourceTree = "<group>"; };
+		87A1CC8A27E66AAF00D2503F /* EntityRepresentable+entityName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityRepresentable+entityName.swift"; sourceTree = "<group>"; };
 		87AA8AEC27D748D500565E65 /* DatabaseApi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatabaseApi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87AA8AEF27D748D500565E65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		87AA8AF127D748D500565E65 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -120,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */,
+				87A1CC8A27E66AAF00D2503F /* EntityRepresentable+entityName.swift */,
 				87BF849227DE244C00E62F93 /* NotificationName+ObjectDidChange.swift */,
 			);
 			path = Extensions;
@@ -159,6 +166,8 @@
 				8753A5B527D75B1700FB72A4 /* Logging.swift */,
 				87F7AB8827E3981200F7D936 /* ManagedObjectContextProvider.swift */,
 				870D3D2727E4806900274EA7 /* DataStore.swift */,
+				87A1CC8627E6689300D2503F /* MainDataStore.swift */,
+				87A1CC8827E6695100D2503F /* BackgroundDataStore.swift */,
 				876C03EF27DD41100095FC08 /* Extensions */,
 				87CF90BB27D9F01F0003A3E9 /* Config */,
 				87CF90BA27D9F0080003A3E9 /* Models */,
@@ -385,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87A1CC8B27E66AAF00D2503F /* EntityRepresentable+entityName.swift in Sources */,
 				87775A5327DAC21500980557 /* Fetchable.swift in Sources */,
 				870D3D2827E4806900274EA7 /* DataStore.swift in Sources */,
 				87CF90B927D9F0050003A3E9 /* Employee.swift in Sources */,
@@ -395,6 +405,8 @@
 				873E36F627DA47D700BA38C8 /* Company.swift in Sources */,
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
 				87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */,
+				87A1CC8727E6689300D2503F /* MainDataStore.swift in Sources */,
+				87A1CC8927E6695100D2503F /* BackgroundDataStore.swift in Sources */,
 				876C03EE27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift in Sources */,
 				87BF849327DE244C00E62F93 /* NotificationName+ObjectDidChange.swift in Sources */,
 				87F7AB8927E3981200F7D936 /* ManagedObjectContextProvider.swift in Sources */,

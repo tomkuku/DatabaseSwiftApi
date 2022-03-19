@@ -30,8 +30,7 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
     
     // MARK: Properties
     
-    private static let defaultStoreName = "DatabaseApi"
-    
+    private let defaultStoreName = "DatabaseApi"
     private let storeName: String
     private let mode: Mode
     
@@ -86,7 +85,7 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
     init(mode: Mode = .app) {
         switch mode {
         case .app:
-            storeName = ManagedObjectContextProviderImpl.defaultStoreName
+            storeName = defaultStoreName
         case .test(let storeName):
             self.storeName = storeName
         }

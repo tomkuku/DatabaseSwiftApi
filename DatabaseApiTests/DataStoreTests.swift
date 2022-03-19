@@ -14,13 +14,13 @@ import Hamcrest
 final class DataStoreTests: XCTestCase {
     
     private var mock: ManagedObjectContextProvider!
-    private var sut: DataStore!
+    private var sut: MainDataStore!
     
     override func setUp() {
         super.setUp()
         
         mock = ManagedObjectContextProviderImpl(mode: .test("com.test.store.name"))
-        sut = DataStoreImpl(context: mock.mainContext)
+        sut = MainDataStoreImpl(contextProvider: mock)
     }
     
     override func tearDown() {
