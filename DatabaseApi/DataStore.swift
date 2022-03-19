@@ -30,6 +30,7 @@ protocol BackgroundDataStore: DataStore {
     func perform(_ block: @escaping () -> Void)
     func performAndWait(_ block: () -> Void)
     func deleteMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter?)
+    func insertMany<T: EntityRepresentable>(_ entity: T.Type, objects: [[String: Any]])
 }
 
 extension BackgroundDataStore {
@@ -131,5 +132,18 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
         let deletedObjects: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDArray]
         
         NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects, into: [context])
+    }
+    
+    func insertMany<T: EntityRepresentable>(_ entity: T.Type, objects: [[String: Any]]) {
+        let entityName = String(describing: T.self)
+        let batchInsertRequest = NSBatchInsertRequest(entityName: entityName, objects: objects)
+        batchInsertRequest.resultType = .objectIDs
+        
+        let result = try? context.execute(batchInsertRequest) as? NSBatchInsertResult
+        
+        if let objectIDs = result?.result as? [NSManagedObjectID], objectIDs.count > 0 {
+            let save = [NSInsertedObjectsKey: objectIDs]
+            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
+        }
     }
 }

@@ -51,15 +51,42 @@ class BackgorundDataStoreTests: XCTestCase {
                 try! mock.mainContext.save() // swiftlint:disable:this force_try
             }
             
+            var fetchedEmployees: [Employee] = sut.fetch()
+            
+            assertThat(fetchedEmployees.count, equalTo(4))
+            
             sut.deleteMany(Employee.self, filter: .ageGreatThen(30))
             
-            let fetchedEmployees: [Employee] = sut.fetch()
+            fetchedEmployees = sut.fetch()
             
             assertThat(fetchedEmployees.count, equalTo(2))
             
             fetchedEmployees.forEach {
                 assertThat($0.age! <= 30)
             }
+        }
+    }
+    
+    func test__insert_many_objects() {
+        let fileName = "employees_test_list"
+        let url = Bundle.main.url(forResource: fileName, withExtension: "json")!
+        var data: Data!
+        var jsonArray: [[String: Any]] = []
+        
+        do {
+            data = try Data(contentsOf: url)
+            // swiftlint:disable:next force_cast
+            jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [[String: Any]]
+        } catch {
+            fatalError()
+        }
+        
+        sut.performAndWait {
+            sut.insertMany(Employee.self, objects: jsonArray)
+                    
+            let fetchedEmployees: [Employee] = sut.fetch()
+                    
+            assertThat(fetchedEmployees.count, equalTo(jsonArray.count))
         }
     }
 }
