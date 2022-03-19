@@ -31,6 +31,7 @@ protocol BackgroundDataStore: DataStore {
     func performAndWait(_ block: () -> Void)
     func deleteMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter?)
     func insertMany<T: EntityRepresentable>(_ entity: T.Type, objects: [[String: Any]])
+    func updateMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter?, propertiesToUpdate: [AnyHashable: Any])
 }
 
 extension BackgroundDataStore {
@@ -50,9 +51,8 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
     // MARK: DataStore
     
     func createObject<T: EntityRepresentable>() -> T {
-        let entityName = String(describing: T.self)
-        guard let entity = NSEntityDescription.entity(forEntityName: entityName, in: context) else {
-            Log.fatal("Entity with name \(entityName) not found!")
+        guard let entity = NSEntityDescription.entity(forEntityName: T.entityName, in: context) else {
+            Log.fatal("Entity with name \(T.entityName) not found!")
         }
         
         let managedObject = NSManagedObject(entity: entity, insertInto: context)
@@ -76,8 +76,7 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
     }
     
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T] {
-        let entityName = String(describing: T.self)
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: entityName)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: T.entityName)
         fetchRequest.predicate = filter?.predicate
         fetchRequest.sortDescriptors = sorting.map { $0.sortDescriptor }
         fetchRequest.fetchLimit = fetchLimit ?? fetchRequest.fetchLimit
@@ -87,7 +86,7 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
         do {
             objects = try context.fetch(fetchRequest)
         } catch {
-            Log.error("Fetching \(entityName) failed with error \(error.localizedDescription).")
+            Log.error("Fetching \(T.entityName) failed with error \(error.localizedDescription).")
         }
         
         return objects.map { T.init(managedObject: $0) }
@@ -107,14 +106,12 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
     
     func performAndWait(_ block: () -> Void) {
         context.performAndWait {
-            print("block hadling")
             block()
         }
     }
         
     func deleteMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter? = nil) {
-        let entityName = String(describing: T.self)
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: T.entityName)
         fetchRequest.predicate = filter?.predicate
         
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -137,8 +134,7 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
     }
     
     func insertMany<T: EntityRepresentable>(_ entity: T.Type, objects: [[String: Any]]) {
-        let entityName = String(describing: T.self)
-        let batchInsertRequest = NSBatchInsertRequest(entityName: entityName, objects: objects)
+        let batchInsertRequest = NSBatchInsertRequest(entityName: T.entityName, objects: objects)
         batchInsertRequest.resultType = .objectIDs
         
         var batchInsertResult: NSBatchInsertResult?
@@ -157,8 +153,36 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
         mergeChanges(objectIDs: objectIDs, key: NSInsertedObjectsKey)
     }
     
+    func updateMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter?, propertiesToUpdate: [AnyHashable: Any]) {
+        let request = NSBatchUpdateRequest(entityName: T.entityName)
+        request.predicate = filter?.predicate
+        request.propertiesToUpdate = propertiesToUpdate
+        request.resultType = .updatedObjectIDsResultType
+        
+        var result: NSBatchUpdateResult?
+        
+        do {
+            result = try context.execute(request) as? NSBatchUpdateResult
+        } catch {
+            Log.error("Updating many failed with error: \(error.localizedDescription)")
+        }
+        
+        guard let objectIDs = result?.result as? [NSManagedObjectID], objectIDs.count > 0 else {
+            Log.error("No updated objectIDs")
+            return
+        }
+        
+        mergeChanges(objectIDs: objectIDs, key: NSUpdatedObjectIDsKey)
+    }
+    
     private func mergeChanges(objectIDs: [NSManagedObjectID], key: String) {
         let save = [key: objectIDs]
         NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
+    }
+}
+
+fileprivate extension EntityRepresentable {
+    static var entityName: String {
+        String(describing: Self.self)
     }
 }

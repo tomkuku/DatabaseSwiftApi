@@ -10,6 +10,7 @@ import XCTest
 import Hamcrest
 
 @testable import DatabaseApi
+import CoreData
 
 class BackgorundDataStoreTests: XCTestCase {
     
@@ -47,9 +48,7 @@ class BackgorundDataStoreTests: XCTestCase {
             employee4.name = "Harry"
             
             sut.saveChanges()
-            mock.mainContext.performAndWait {
-                try! mock.mainContext.save() // swiftlint:disable:this force_try
-            }
+            saveMainContext()
             
             var fetchedEmployees: [Employee] = sut.fetch()
             
@@ -83,10 +82,63 @@ class BackgorundDataStoreTests: XCTestCase {
         
         sut.performAndWait {
             sut.insertMany(Employee.self, objects: jsonArray)
-                    
+            
             let fetchedEmployees: [Employee] = sut.fetch()
-                    
+            
             assertThat(fetchedEmployees.count, equalTo(jsonArray.count))
+        }
+    }
+    
+    func test__update_many() {
+        sut.performAndWait {
+            createEmployees()
+            
+            sut.saveChanges()
+            saveMainContext()
+            
+            let newName = "JOHN"
+            
+            sut.updateMany(Employee.self, filter: .ageGreatThen(30), propertiesToUpdate: ["name": newName])
+            
+            let fetchedEmployees: [Employee] = sut.fetch()
+            
+            for employee in fetchedEmployees where employee.age! > 30 {
+                assertThat(employee.name, equalTo(newName))
+            }
+        }
+    }
+    
+    @discardableResult
+    private func createEmployees() -> [Employee] {
+        // swiftlint:disable force_cast
+        let fileName = "employees_test_list"
+        let url = Bundle.main.url(forResource: fileName, withExtension: "json")!
+        var data: Data!
+        var jsonArray: [NSDictionary] = []
+        
+        do {
+            data = try Data(contentsOf: url)
+            jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [NSDictionary]
+        } catch {
+            fatalError()
+        }
+        
+        var employees: [Employee] = []
+        
+        jsonArray.forEach {
+            let employee: Employee = sut.createObject()
+            employee.name = $0.value(forKey: "name") as! String
+            employee.age = ($0.value(forKey: "age") as! Int)
+            employees.append(employee)
+        }
+        
+        return employees
+        // swiftlint:enable force_cast
+    }
+    
+    private func saveMainContext() {
+        mock.mainContext.performAndWait {
+            try? mock.mainContext.save()
         }
     }
 }
