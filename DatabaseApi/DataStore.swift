@@ -26,13 +26,27 @@ extension DataStore {
     }
 }
 
-final class DataStoreImpl: DataStore {
+protocol BackgroundDataStore: DataStore {
+    func perform(_ block: @escaping () -> Void)
+    func performAndWait(_ block: () -> Void)
+    func deleteMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter?)
+}
+
+extension BackgroundDataStore {
+    func deleteMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter? = nil) {
+        deleteMany(entity, filter: filter)
+    }
+}
+
+final class DataStoreImpl: DataStore, BackgroundDataStore {
     
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context
     }
+    
+    // MARK: DataStore
     
     func createObject<T: EntityRepresentable>() -> T {
         let entityName = String(describing: T.self)
@@ -80,5 +94,42 @@ final class DataStoreImpl: DataStore {
     
     func deleteObject<T: EntityRepresentable>(_ object: T) {
         context.delete(context.getExistingObject(for: object.managedObjectID))
+    }
+    
+    // MARK: BackgroundDataStore
+    
+    func perform(_ block: @escaping () -> Void) {
+        context.perform {
+            block()
+        }
+    }
+    
+    func performAndWait(_ block: () -> Void) {
+        context.performAndWait {
+            print("block hadling")
+            block()
+        }
+    }
+        
+    func deleteMany<T: Fetchable>(_ entity: T.Type, filter: T.Filter? = nil) {
+        let entityName = String(describing: T.self)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        fetchRequest.predicate = filter?.predicate
+        
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        deleteRequest.resultType = .resultTypeObjectIDs
+        
+        var batchDeleteResult: NSBatchDeleteResult?
+                
+        do {
+            batchDeleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
+        } catch {
+            Log.error("Executing batch delete request falied with error: \(error.localizedDescription)")
+        }
+        
+        let objectIDArray = batchDeleteResult?.result as? [NSManagedObjectID]
+        let deletedObjects: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDArray]
+        
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects, into: [context])
     }
 }
