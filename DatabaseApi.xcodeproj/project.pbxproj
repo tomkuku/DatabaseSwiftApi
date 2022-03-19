@@ -11,12 +11,9 @@
 		870D3D2827E4806900274EA7 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870D3D2727E4806900274EA7 /* DataStore.swift */; };
 		870D3D2A27E483E100274EA7 /* DataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870D3D2927E483E100274EA7 /* DataStoreTests.swift */; };
 		873E36F627DA47D700BA38C8 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873E36F527DA47D700BA38C8 /* Company.swift */; };
-		8742CAAF27DBE976001D2D1B /* PersistentStoreManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8742CAAE27DBE976001D2D1B /* PersistentStoreManagerTests.swift */; };
-		8753A5A727D74FA800FB72A4 /* PersistentStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */; };
 		8753A5B627D75B1700FB72A4 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B527D75B1700FB72A4 /* Logging.swift */; };
 		8753A5B927D7674400FB72A4 /* DatabaseApi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8753A5B727D7674400FB72A4 /* DatabaseApi.xcdatamodeld */; };
 		876C03EE27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */; };
-		87775A5127DABFD700980557 /* PersistentStoreClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87775A5027DABFD700980557 /* PersistentStoreClientTests.swift */; };
 		87775A5327DAC21500980557 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87775A5227DAC21500980557 /* Fetchable.swift */; };
 		87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8AEF27D748D500565E65 /* AppDelegate.swift */; };
 		87AA8AF227D748D500565E65 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA8AF127D748D500565E65 /* SceneDelegate.swift */; };
@@ -27,7 +24,6 @@
 		87BF848527DE039900E62F93 /* employees_test_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 87BF848427DE039900E62F93 /* employees_test_list.json */; };
 		87BF848627DE039D00E62F93 /* employees_test_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 87BF848427DE039900E62F93 /* employees_test_list.json */; };
 		87BF849327DE244C00E62F93 /* NotificationName+ObjectDidChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BF849227DE244C00E62F93 /* NotificationName+ObjectDidChange.swift */; };
-		87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */; };
 		87CF90B927D9F0050003A3E9 /* Employee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90B827D9F0050003A3E9 /* Employee.swift */; };
 		87CF90BF27D9FE530003A3E9 /* EntityRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */; };
 		87CF90C327DA0EA50003A3E9 /* EntityAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CF90C227DA0EA50003A3E9 /* EntityAttribute.swift */; };
@@ -54,12 +50,9 @@
 		870D3D2727E4806900274EA7 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		870D3D2927E483E100274EA7 /* DataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreTests.swift; sourceTree = "<group>"; };
 		873E36F527DA47D700BA38C8 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
-		8742CAAE27DBE976001D2D1B /* PersistentStoreManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreManagerTests.swift; sourceTree = "<group>"; };
-		8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreManager.swift; sourceTree = "<group>"; };
 		8753A5B527D75B1700FB72A4 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		8753A5B827D7674400FB72A4 /* DatabaseApi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DatabaseApi.xcdatamodel; sourceTree = "<group>"; };
 		876C03ED27DD410C0095FC08 /* NSManagedObjectContext+getExistingObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+getExistingObject.swift"; sourceTree = "<group>"; };
-		87775A5027DABFD700980557 /* PersistentStoreClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreClientTests.swift; sourceTree = "<group>"; };
 		87775A5227DAC21500980557 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		87AA8AEC27D748D500565E65 /* DatabaseApi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatabaseApi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87AA8AEF27D748D500565E65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -72,7 +65,6 @@
 		87AA8B0727D749A400565E65 /* DatabaseApiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatabaseApiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		87BF848427DE039900E62F93 /* employees_test_list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = employees_test_list.json; sourceTree = "<group>"; };
 		87BF849227DE244C00E62F93 /* NotificationName+ObjectDidChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+ObjectDidChange.swift"; sourceTree = "<group>"; };
-		87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStoreClient.swift; sourceTree = "<group>"; };
 		87CF90B827D9F0050003A3E9 /* Employee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employee.swift; sourceTree = "<group>"; };
 		87CF90BE27D9FE530003A3E9 /* EntityRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRepresentable.swift; sourceTree = "<group>"; };
 		87CF90C227DA0EA50003A3E9 /* EntityAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAttribute.swift; sourceTree = "<group>"; };
@@ -165,9 +157,7 @@
 				87AA8AFD27D748D600565E65 /* Info.plist */,
 				8753A5B727D7674400FB72A4 /* DatabaseApi.xcdatamodeld */,
 				8753A5B527D75B1700FB72A4 /* Logging.swift */,
-				8753A5A627D74FA800FB72A4 /* PersistentStoreManager.swift */,
 				87F7AB8827E3981200F7D936 /* ManagedObjectContextProvider.swift */,
-				87CF90B627D9EE830003A3E9 /* PersistentStoreClient.swift */,
 				870D3D2727E4806900274EA7 /* DataStore.swift */,
 				876C03EF27DD41100095FC08 /* Extensions */,
 				87CF90BB27D9F01F0003A3E9 /* Config */,
@@ -182,8 +172,6 @@
 				87CF90C427DA24E60003A3E9 /* EntityAttributeTests.swift */,
 				870D3D2927E483E100274EA7 /* DataStoreTests.swift */,
 				87F7AF0327E4DCBE00BD7DE0 /* BackgorundDataStoreTests.swift */,
-				87775A5027DABFD700980557 /* PersistentStoreClientTests.swift */,
-				8742CAAE27DBE976001D2D1B /* PersistentStoreManagerTests.swift */,
 				87BF848427DE039900E62F93 /* employees_test_list.json */,
 			);
 			path = DatabaseApiTests;
@@ -399,12 +387,10 @@
 			files = (
 				87775A5327DAC21500980557 /* Fetchable.swift in Sources */,
 				870D3D2827E4806900274EA7 /* DataStore.swift in Sources */,
-				8753A5A727D74FA800FB72A4 /* PersistentStoreManager.swift in Sources */,
 				87CF90B927D9F0050003A3E9 /* Employee.swift in Sources */,
 				8753A5B927D7674400FB72A4 /* DatabaseApi.xcdatamodeld in Sources */,
 				8753A5B627D75B1700FB72A4 /* Logging.swift in Sources */,
 				87AA8AF427D748D500565E65 /* ViewController.swift in Sources */,
-				87CF90B727D9EE830003A3E9 /* PersistentStoreClient.swift in Sources */,
 				87CF90C327DA0EA50003A3E9 /* EntityAttribute.swift in Sources */,
 				873E36F627DA47D700BA38C8 /* Company.swift in Sources */,
 				87AA8AF027D748D500565E65 /* AppDelegate.swift in Sources */,
@@ -420,9 +406,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8742CAAF27DBE976001D2D1B /* PersistentStoreManagerTests.swift in Sources */,
 				870D3D2A27E483E100274EA7 /* DataStoreTests.swift in Sources */,
-				87775A5127DABFD700980557 /* PersistentStoreClientTests.swift in Sources */,
 				87F7AF0427E4DCBE00BD7DE0 /* BackgorundDataStoreTests.swift in Sources */,
 				87CF90C527DA24E60003A3E9 /* EntityAttributeTests.swift in Sources */,
 			);
