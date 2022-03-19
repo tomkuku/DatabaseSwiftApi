@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Hamcrest
+import CoreData
 
 @testable import DatabaseApi
 
@@ -123,7 +124,7 @@ final class DataStoreTests: XCTestCase {
         sut.deleteObject(employee)
         
         var fetchedEmployees: [Employee] = sut.fetch()
-                
+        
         fetchedEmployees = sut.fetch()
         
         assertThat(fetchedEmployees, empty())
@@ -144,11 +145,11 @@ final class DataStoreTests: XCTestCase {
     func test__revert_changes_not_saved_client() {
         let employee1: Employee = sut.createObject()
         employee1.age = 22
-             
+        
         sut.saveChanges()
         
         employee1.age = 23
-                
+        
         let employee2: Employee = sut.createObject()
         employee2.age = 45
         
@@ -169,5 +170,51 @@ final class DataStoreTests: XCTestCase {
         
         assertThat(fetchedEmployees.count, equalTo(1))
         assertThat(employee.age, equalTo(22))
+    }
+    
+    func test__sync() {
+        let mainDataStore: MainDataStore = MainDataStoreImpl(contextProvider: mock)
+        let backgroundDataStore: BackgroundDataStore = BackgroundDataStoreImpl(contextProvider: mock)
+        
+        var fetchedEmployees: [Employee] = []
+        
+        var employee1: Employee!
+        var employee2: Employee!
+        
+        backgroundDataStore.performAndWait {
+            employee1 = backgroundDataStore.createObject()
+            employee1.name = "Tom"
+            employee1.age = 22
+            
+            employee2 = backgroundDataStore.createObject()
+            employee2.name = "John"
+            employee2.age = 35
+            
+            backgroundDataStore.saveChanges()
+        }
+        
+        fetchedEmployees = mainDataStore.fetch()
+        
+        assertThat(fetchedEmployees.count, equalTo(2))
+        
+        let employeeToUpdate = fetchedEmployees.first(where: { $0.name == "Tom" })
+        employeeToUpdate?.age = 24
+        
+        let employeeToDelete = fetchedEmployees.first(where: { $0.name == "John" })!
+        
+        let employee3: Employee = mainDataStore.createObject()
+        employee3.age = 44
+        employee3.name = "Kate"
+        
+        mainDataStore.deleteObject(employeeToDelete)
+        
+        mainDataStore.saveChanges()
+        
+        backgroundDataStore.performAndWait {
+            fetchedEmployees = backgroundDataStore.fetch()
+            
+            assertThat(fetchedEmployees.count, equalTo(2))
+            assertThat(employee1.age, equalTo(24))
+        }
     }
 }

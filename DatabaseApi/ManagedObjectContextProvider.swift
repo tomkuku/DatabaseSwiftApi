@@ -33,12 +33,15 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
     private let defaultStoreName = "DatabaseApi"
     private let storeName: String
     private let mode: Mode
+    private var contexts: Set<NSManagedObjectContext> = []
     
     private(set) lazy var mainContext: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.persistentStoreCoordinator = persistentStoreCoordinator
         moc.automaticallyMergesChangesFromParent = false
         moc.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        addContextDidSaveObserver(to: moc)
+        contexts.insert(moc)
         return moc
     }()
     
@@ -92,10 +95,37 @@ final class ManagedObjectContextProviderImpl: ManagedObjectContextProvider {
         self.mode = mode
     }
     
+    @objc private func contextDidMerge(notification: Notification) {
+        guard let triggerContex = notification.object as? NSManagedObjectContext else {
+            Log.error("Trigger context can not be found.")
+            return
+        }
+        
+        for context in contexts where context != triggerContex {
+            context.performAndWait {
+                context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+                context.mergeChanges(fromContextDidSave: notification)
+            }
+            
+            NotificationCenter.default.post(name: .NSManagedObjectContextObjectsDidMerge,
+                                            object: context,
+                                            userInfo: notification.userInfo)
+        }
+    }
+    
     func createNewBackgroundContext() -> NSManagedObjectContext {
         let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.parent = mainContext
         moc.automaticallyMergesChangesFromParent = false
+        addContextDidSaveObserver(to: moc)
+        contexts.insert(moc)
         return moc
+    }
+    
+    private func addContextDidSaveObserver(to context: NSManagedObjectContext) {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(contextDidMerge(notification:)),
+                                               name: .NSManagedObjectContextDidSave,
+                                               object: context)
     }
 }
