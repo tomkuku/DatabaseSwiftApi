@@ -125,13 +125,15 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
         do {
             batchDeleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
         } catch {
-            Log.error("Executing batch delete request falied with error: \(error.localizedDescription)")
+            Log.error("Executing batch delete request falied with error: \(error.localizedDescription).")
         }
         
-        let objectIDArray = batchDeleteResult?.result as? [NSManagedObjectID]
-        let deletedObjects: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDArray]
+        guard let objectIDs = batchDeleteResult?.result as? [NSManagedObjectID], objectIDs.count > 0 else {
+            Log.debug("No deleted object ids.")
+            return
+        }
         
-        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deletedObjects, into: [context])
+        mergeChanges(objectIDs: objectIDs, key: NSDeletedObjectIDsKey)
     }
     
     func insertMany<T: EntityRepresentable>(_ entity: T.Type, objects: [[String: Any]]) {
@@ -139,11 +141,24 @@ final class DataStoreImpl: DataStore, BackgroundDataStore {
         let batchInsertRequest = NSBatchInsertRequest(entityName: entityName, objects: objects)
         batchInsertRequest.resultType = .objectIDs
         
-        let result = try? context.execute(batchInsertRequest) as? NSBatchInsertResult
+        var batchInsertResult: NSBatchInsertResult?
         
-        if let objectIDs = result?.result as? [NSManagedObjectID], objectIDs.count > 0 {
-            let save = [NSInsertedObjectsKey: objectIDs]
-            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
+        do {
+            batchInsertResult = try context.execute(batchInsertRequest) as? NSBatchInsertResult
+        } catch {
+            Log.error("Executing batch insert request falied with error: \(error.localizedDescription).")
         }
+        
+        guard let objectIDs = batchInsertResult?.result as? [NSManagedObjectID], objectIDs.count > 0 else {
+            Log.debug("No inserted object ids.")
+            return
+        }
+        
+        mergeChanges(objectIDs: objectIDs, key: NSInsertedObjectsKey)
+    }
+    
+    private func mergeChanges(objectIDs: [NSManagedObjectID], key: String) {
+        let save = [key: objectIDs]
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: save, into: [context])
     }
 }
