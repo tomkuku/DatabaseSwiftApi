@@ -13,13 +13,13 @@ import XCTest
 
 final class EntityAttributeTests: XCTestCase {
     
-    private var sut: MainDataStore!
+    private var sut: DataStore!
     
     override func setUp() {
         super.setUp()
         
         let mock = ManagedObjectContextProviderImpl(mode: .test("com.test.entity.attribute.store.name"))
-        self.sut = MainDataStoreImpl(contextProvider: mock)
+        self.sut = DataStoreImpl(context: mock.mainContext)
     }
     
     override func tearDown() {
