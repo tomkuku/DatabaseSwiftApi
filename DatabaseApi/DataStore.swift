@@ -63,4 +63,32 @@ class DataStoreImpl {
     func deleteObject<T: EntityRepresentable>(_ object: T) {
         context.delete(context.getExistingObject(for: object.managedObjectID))
     }
+    
+    func observeChanges<T: EntityRepresentable>(handler: @escaping ([T], [T], [DatabaseObjectID]) -> Void) {
+        NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidMerge,
+                                               object: context,
+                                               queue: nil) { notification in
+            let inserted: [T] = notification.getModifiedEntitys(forKey: NSInsertedObjectsKey)
+            let updated: [T] = notification.getModifiedEntitys(forKey: NSUpdatedObjectsKey)
+            var deleted: [NSManagedObjectID] = []
+            
+            if let deletes = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
+                deleted = deletes.map { $0.objectID }
+            } else {
+                Log.debug("No deleted objects in notification.")
+            }
+            
+            handler(inserted, updated, deleted)
+        }
+    }
+}
+
+fileprivate extension Notification {
+    func getModifiedEntitys<T: EntityRepresentable>(forKey key: String) -> [T] {
+        guard let objects = self.userInfo?[key] as? Set<NSManagedObject> else {
+            Log.debug("No modified ManagedObjects from notification for key \(key).")
+            return []
+        }
+        return objects.map { T.init(managedObject: $0) }
+    }
 }

@@ -217,4 +217,58 @@ final class DataStoreTests: XCTestCase {
             assertThat(employee1.age, equalTo(24))
         }
     }
+    
+    func test__observeChanges_on_background_store() {
+        let mainDataStore: MainDataStore = MainDataStoreImpl(contextProvider: mock)
+        let backgroundDataStore2: BackgroundDataStore = BackgroundDataStoreImpl(contextProvider: mock)
+        
+        // prepare
+        let employee1: Employee = mainDataStore.createObject()
+        employee1.name = "Tom"
+        employee1.age = 22
+        
+        let employee2: Employee = mainDataStore.createObject()
+        employee2.name = "John"
+        employee2.age = 35
+        
+        mainDataStore.saveChanges()
+        
+        let expectation = expectation(description: "com.test.observe.changes")
+        
+        var insertedEmployees: [Employee] = []
+        var updatedEmployees: [Employee] = []
+        var deletedEmployees: [NSManagedObjectID] = []
+        
+        backgroundDataStore2.perform {
+            backgroundDataStore2.observeChanges { (inserted: [Employee], updated: [Employee], deleted: [NSManagedObjectID]) in
+                insertedEmployees = inserted
+                updatedEmployees = updated
+                deletedEmployees = deleted
+                
+                expectation.fulfill()
+            }
+        }
+        
+        mainDataStore.deleteObject(employee1)
+        
+        employee2.age = 37
+        
+        let employee3: Employee = mainDataStore.createObject()
+        employee3.age = 43
+        employee3.name = "Kate"
+        
+        // action
+        mainDataStore.saveChanges()
+        
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        // check
+        assertThat(insertedEmployees.count, equalTo(1))
+        
+        assertThat(updatedEmployees.count, equalTo(1))
+        assertThat(updatedEmployees.first?.age, equalTo(37))
+        
+        assertThat(deletedEmployees.count, equalTo(1))
+        assertThat(deletedEmployees.first, equalTo(employee1.managedObjectID))
+    }
 }

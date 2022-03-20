@@ -14,6 +14,8 @@ protocol MainDataStore {
     func revertUnsavedChanges()
     func fetch<T: Fetchable>(filter: T.Filter?, sorting: [T.Sorting], fetchLimit: Int?) -> [T]
     func deleteObject<T: EntityRepresentable>(_ object: T)
+    func observeChanges<T: EntityRepresentable>(
+            handler: @escaping (_ inserted: [T], _ updated: [T], _ deletedIDs: [DatabaseObjectID]) -> Void)
 }
 
 extension MainDataStore {
