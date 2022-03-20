@@ -12,12 +12,10 @@ extension NSManagedObjectContext {
     func getExistingObject(for id: NSManagedObjectID) -> NSManagedObject {
         var object: NSManagedObject!
         
-        performAndWait {
-            do {
-                object = try existingObject(with: id)
-            } catch {
-                Log.fatal("Getting existing object failed with error: \(error.localizedDescription).")
-            }
+        do {
+            object = try existingObject(with: id)
+        } catch {
+            Log.fatal("Getting existing object failed with error: \(error.localizedDescription).")
         }
         return object
     }

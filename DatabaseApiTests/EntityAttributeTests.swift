@@ -13,13 +13,13 @@ import XCTest
 
 final class EntityAttributeTests: XCTestCase {
     
-    private var sut: PersistentStoreClient!
+    private var sut: DataStore!
     
     override func setUp() {
         super.setUp()
         
-        let persistentStoreManager = PersistentStoreManagerImpl(mode: .test)
-        self.sut = persistentStoreManager.createNewClient()
+        let mock = ManagedObjectContextProviderImpl(mode: .test("com.test.entity.attribute.store.name"))
+        self.sut = DataStoreImpl(context: mock.mainContext)
     }
     
     override func tearDown() {
